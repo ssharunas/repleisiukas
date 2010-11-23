@@ -13,13 +13,16 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     dialog.cpp \
-    jshighlighter.cpp
+    jshighlighter.cpp \
+    qadvancedinputpanel.cpp
 
 HEADERS  += mainwindow.h \
     dialog.h \
-    jshighlighter.h
+    jshighlighter.h \
+    qadvancedinputpanel.h
 
 FORMS    += mainwindow.ui \
-    dialog.ui
+    dialog.ui \
+    qadvancedinputpanel.ui
 
 OTHER_FILES +=

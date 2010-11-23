@@ -41,11 +41,11 @@ void MainWindow::on_pushButton_Go_clicked()
     strem->flush();
 
     QScriptEngine engine;
-    QString in = ui->stringIn->toPlainText();
-    in = in.replace('\'', "\\'");
-    in = in.replace('\n', "\\n");
+	QString in = ui->stringIn->text();
+//    in = in.replace('\'', "\\'");
+//    in = in.replace('\n', "\\n");
 
-    QString query =  QString("wee='%1'; \n%2").arg(in).arg(ui->query->toPlainText());
+	QString query =  QString("%1 ; \n%2").arg(in).arg(ui->query->toPlainText());
     qDebug() << query;
     QScriptValue value = engine.evaluate(query);
 
