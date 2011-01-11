@@ -23,8 +23,14 @@ private:
     QTextStream* strem;
     QFile *last;
     JSHighlighter *highlighter;
+	unsigned int I_MENU_ITEMS;
 
+private:
+	void UpdateLastUsedMenu();
+	void UpdateLastUsedOrder();
+	void LoadFromFile(QString file);
 private slots:
+	void on_openFile_clicked();
     void on_pushButton_clicked();
     void on_actionLoad_triggered();
     void on_actionSave_triggered();
