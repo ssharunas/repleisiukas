@@ -25,9 +25,17 @@
         <enum>Qt::Vertical</enum>
        </property>
        <widget class="QAdvancedInputPanel" name="stringIn" native="true"/>
-       <widget class="QTextEdit" name="query"/>
+       <widget class="QTextEdit" name="query">
+        <property name="tabStopWidth">
+         <number>40</number>
+        </property>
+       </widget>
       </widget>
-      <widget class="QPlainTextEdit" name="stringOut"/>
+      <widget class="QPlainTextEdit" name="stringOut">
+       <property name="tabStopWidth">
+        <number>40</number>
+       </property>
+      </widget>
      </widget>
     </item>
     <item>

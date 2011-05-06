@@ -1,4 +1,6 @@
-function foo()
+function help()
 {
-		return "foo";
+		return "Formų laukelių tipai:\n\
+	* number\n\
+	* text\n";
 }
