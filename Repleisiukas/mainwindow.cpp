@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     highlighter = new JSHighlighter(ui->query->document());
 
+	ui->query->addAction(ui->actionExecute);
 	ui->query->setPlainText(fileOperations->GetLastQuery());
     UpdateLastUsedMenu();
 
@@ -76,9 +77,14 @@ void MainWindow::on_pushButton_Go_clicked()
 	fileOperations->SetLastQuery(ui->query->toPlainText());
 
 	QScriptEngine engine;
+	QString resources = fileOperations->LoadResource(":/scripts/extensions.js");
 	QString in = ui->stringIn->text();
 
-    QString query =  QString("%1 ; \n%2").arg(in).arg(ui->query->toPlainText());
+	QString query =  QString("%3 ;\n %1 ; \n%2")
+			.arg(in)
+			.arg(ui->query->toPlainText())
+			.arg(resources);
+
     qDebug() << query;
     QScriptValue value = engine.evaluate(query);
 
@@ -114,4 +120,9 @@ void MainWindow::on_actionAuto_update_triggered()
 {
     QSettings settings;
     settings.setValue("/settings/autoUpdate", QVariant(ui->actionAuto_update->isChecked()));
+}
+
+void MainWindow::on_actionExecute_triggered()
+{
+	on_pushButton_Go_clicked();
 }

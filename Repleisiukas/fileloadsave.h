@@ -25,6 +25,8 @@ public:
 	void SaveToFile(QString fileName, QString query);
 	QWidget* parent() const;
 
+	QString LoadResource(QString path);
+
 private:
 	unsigned int DEFAULT_MENU_ITEMS_COUNT;
 	QTextStream* strem;

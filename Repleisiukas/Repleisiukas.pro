@@ -27,4 +27,8 @@ FORMS    += mainwindow.ui \
     dialog.ui \
     qadvancedinputpanel.ui
 
-OTHER_FILES +=
+OTHER_FILES += \
+    extensions.js
+
+RESOURCES += \
+    resources.qrc

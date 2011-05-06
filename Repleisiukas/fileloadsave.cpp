@@ -1,9 +1,6 @@
 #include "fileloadsave.h"
 #include <QMessageBox>
-#include <QFile>
-#include <QTextStream>
 #include <QSettings>
-#include <QList>
 #include <QFileDialog>
 
 FileLoadSave::FileLoadSave(QWidget *parent) :
@@ -198,4 +195,11 @@ void FileLoadSave::SaveToFile(QString fileName, QString query)
 		stream << query;
 		UpdateLastUsedOrder(fileName);
 	}
+}
+
+QString FileLoadSave::LoadResource(QString path){
+	QFile resourceFile(path);
+	resourceFile.open(QIODevice::ReadOnly);
+	QTextStream stream(&resourceFile);
+	return stream.readAll();
 }
