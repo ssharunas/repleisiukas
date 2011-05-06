@@ -16,115 +16,67 @@ MainWindow::MainWindow(QWidget *parent) :
     QCoreApplication::setOrganizationDomain("softdent.lt");
     QCoreApplication::setApplicationName("Repleisiukas");
 
-    I_MENU_ITEMS = 10;
+	fileOperations = new FileLoadSave(this);
     ui->setupUi(this);
     highlighter = new JSHighlighter(ui->query->document());
 
-    last = new QFile("d:\\last.txt");
-
-    if (!last->open(QIODevice::ReadWrite | QIODevice::Text))
-        return;
-    strem = new QTextStream(last);
-
-    ui->query->setPlainText(strem->readAll());
+	ui->query->setPlainText(fileOperations->GetLastQuery());
     UpdateLastUsedMenu();
 
     QSettings settings;
     bool autoUpdate = settings.value("/settings/autoUpdate").toBool();
     ui->actionAuto_update->setChecked(autoUpdate);
 
+	connect(fileOperations, SIGNAL(UpdateLastUsed()), this, SLOT(UpdateLastUsedMenu()));
     //connect(ui->stringIn, SIGNAL(updateRequest()), this, SLOT(on_pushButton_clicked()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete highlighter;
-    last->close();
-    delete strem;
-    delete last;
+	delete highlighter;
 }
 
-void MainWindow::UpdateLastUsedMenu(){
-    QStringList items;
-    QSettings settings;
+void MainWindow::UpdateLastUsedMenu()
+{
+	ui->menuLastUsed->clear();
+	QStringList items = fileOperations->GetLastUsedMenuEntries();
 
-    for(unsigned int i = 0; i < I_MENU_ITEMS; i++){
-        QString item = settings.value(QString("/files/load/%1").arg(i)).toString();
+	foreach (QString item, items)
+	{
+		QString name;
+#ifdef Q_OS_UNIX
+		name = item.section('/', -1);
+#else
+		name = item.section('\\', -1);
+#endif
 
-        if(item.isEmpty())
-            break;
-
-        items.append(item);
-    }
-
-    foreach (QString item, items) {
-        int index = item.lastIndexOf('/');
-
-        if(index == -1)
-            index = item.lastIndexOf('\\');
-
-        QString fileName = item;
-
-        if(index != -1)
-            fileName = QString("%1 [%2]").arg(item.left(index)).arg(item);
-
-        ui->menuLastUsed->addAction(fileName, this, SLOT(on_openFile_clicked()));
+		ui->menuLastUsed->addAction(name, this, SLOT(on_openFile_clicked()))
+			->setData(QVariant(item));
     }
 }
 
-void MainWindow::UpdateLastUsedOrder(QString newName){
-    QSettings settings;
-
-    for(int i = I_MENU_ITEMS; i > 1; i--){
-        QString prevItem = QString("/files/load/%1").arg(i-1);
-        QString item = QString("/files/load/%1").arg(i);
-        settings.setValue(item, settings.value(prevItem));
-    }
-
-    QString item = QString("/files/load/%1").arg(0);
-
-    settings.setValue(item, newName);
-
-    UpdateLastUsedMenu();
-}
-
-void MainWindow::LoadFromFile(QString fileName){
-    if(!fileName.isEmpty()){
-        QFile file(fileName);
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
-            QMessageBox::warning(this, "Could not open file", "could not open file");
-            return;
-        }
-        QTextStream stream(&file);
-        ui->query->setPlainText(stream.readAll());
-        UpdateLastUsedOrder(fileName);
-    }
-}
-
-void MainWindow::on_openFile_clicked(){
+void MainWindow::on_openFile_clicked()
+{
     QAction *senderAction = dynamic_cast<QAction*>(sender());
 
     if(senderAction){
         QString file = senderAction->data().toString();
-        qDebug() << file;
-        LoadFromFile(file);
+		qDebug() << "trying to open file" << file;
+
+		QString string = fileOperations->LoadFromFile(file);
+
+		if(!string.isNull())
+			ui->query->setPlainText(string);
     }
 }
 
 void MainWindow::on_pushButton_Go_clicked()
 {
-    last->resize(0);
+	fileOperations->SetLastQuery(ui->query->toPlainText());
 
-    *strem << ui->query->toPlainText();
-    strem->flush();
-
-    QScriptEngine engine;
-
-
-    QString in = ui->stringIn->text();
-    QScriptValue wee = engine.newObject();
-    wee.setProperty("name", "some value");
+	QScriptEngine engine;
+	QString in = ui->stringIn->text();
 
     QString query =  QString("%1 ; \n%2").arg(in).arg(ui->query->toPlainText());
     qDebug() << query;
@@ -138,32 +90,15 @@ void MainWindow::on_pushButton_Go_clicked()
 
 void MainWindow::on_actionSave_triggered()
 {
-    QString fileName = QFileDialog::getSaveFileName(this);
-    if(!fileName.isEmpty()){
-        QFile file(fileName);
-        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-            return;
-        QTextStream stream(&file);
-        stream << ui->query->toPlainText();
-    }
+	fileOperations->SaveToFile(ui->query->toPlainText());
 }
 
 void MainWindow::on_actionLoad_triggered()
 {
-    QSettings settings;
-    QString path =  settings.value("/files/load/0").toString();
-    int index = path.lastIndexOf("/");
-    if(index == -1)
-        index = path.lastIndexOf("\\");
-    if(index == -1)
-        index = path.length();
+	QString string = fileOperations->LoadFromFile();
 
-    path = path.left(index);
-
-    qDebug() << path;
-
-    QString fileName = QFileDialog::getOpenFileName(this, QString(), path);
-    LoadFromFile(fileName);
+	if(!string.isNull())
+		ui->query->setPlainText(string);
 }
 
 void MainWindow::on_pushButton_clicked()

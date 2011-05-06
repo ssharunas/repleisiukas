@@ -2,9 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QTextStream>
-#include <QFile>
 #include "jshighlighter.h"
+#include "fileloadsave.h"
 
 namespace Ui {
     class MainWindow;
@@ -20,17 +19,18 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QTextStream* strem;
-    QFile *last;
-    JSHighlighter *highlighter;
-    unsigned int I_MENU_ITEMS;
+
+	JSHighlighter *highlighter;
+
+	FileLoadSave* fileOperations;
 
 private:
-    void UpdateLastUsedMenu();
+
     void UpdateLastUsedOrder(QString newName);
     void LoadFromFile(QString file);
 
 private slots:
+	void UpdateLastUsedMenu();
     void on_actionAuto_update_triggered();
     void on_openFile_clicked();
     void on_pushButton_clicked();

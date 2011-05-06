@@ -14,12 +14,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     dialog.cpp \
     jshighlighter.cpp \
-    qadvancedinputpanel.cpp
+    qadvancedinputpanel.cpp \
+    fileloadsave.cpp
 
 HEADERS  += mainwindow.h \
     dialog.h \
     jshighlighter.h \
-    qadvancedinputpanel.h
+    qadvancedinputpanel.h \
+    fileloadsave.h
 
 FORMS    += mainwindow.ui \
     dialog.ui \
