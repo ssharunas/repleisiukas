@@ -31,6 +31,7 @@ private:
     void LoadFromFile(QString file);
 
 private slots:
+    void on_actionAuto_update_triggered();
     void on_openFile_clicked();
     void on_pushButton_clicked();
     void on_actionLoad_triggered();

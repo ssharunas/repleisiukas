@@ -5,6 +5,7 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QSpinBox>
+#include <QSettings>
 
 QAdvancedInputPanel::QAdvancedInputPanel(QWidget *parent) :
     QWidget(parent),
@@ -13,14 +14,14 @@ QAdvancedInputPanel::QAdvancedInputPanel(QWidget *parent) :
 {
     ui->setupUi(this);
 
-	ui->page_2->setContextMenuPolicy(Qt::ActionsContextMenu);
-	ui->page_2->addAction(ui->actionDialogizuoti);
-	ui->textEdit->setContextMenuPolicy(Qt::CustomContextMenu);
+    ui->page_2->setContextMenuPolicy(Qt::ActionsContextMenu);
+    ui->page_2->addAction(ui->actionDialogizuoti);
+    ui->textEdit->setContextMenuPolicy(Qt::CustomContextMenu);
 
-	connect(ui->textEdit,SIGNAL(customContextMenuRequested(QPoint)),
-	this, SLOT(showContextMenu(const QPoint &)));
-	formLayout = new QFormLayout(ui->widget);
-	formLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
+    connect(ui->textEdit,SIGNAL(customContextMenuRequested(QPoint)),
+            this, SLOT(showContextMenu(const QPoint &)));
+    formLayout = new QFormLayout(ui->widget);
+    formLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
 }
 
 QAdvancedInputPanel::~QAdvancedInputPanel()
@@ -38,29 +39,30 @@ void QAdvancedInputPanel::on_actionDialogizuoti_triggered(bool checked)
 }
 
 QString QAdvancedInputPanel::text(){
-	QString result;
+    QString result;
 
-	if(ui->stackedWidget->currentIndex() == 0){
-		result = ui->textEdit->toPlainText();
-		result = result.replace('\'', "\\'");
-		result = result.replace('\n', "\\n");
-		result = "wee='" + result +"' ";
-	}
+    if(ui->stackedWidget->currentIndex() == 0){
+        result = ui->textEdit->toPlainText();
+        result = result.replace('\\', "\\\\");
+        result = result.replace('\'', "\\'");
+        result = result.replace('\n', "\\n");
+        result = "wee='" + result +"' ";
+    }
+    else{
+        foreach(QWidget* item, widgets){
+            QString value = getValue(item);
+            if(!value.isEmpty()){
+                result = result.replace('\\', "\\\\");
+                value = value.replace('\'', "\\'");
+                value = value.replace('\n', "\\n");
 
-
-	foreach(QWidget* item, widgets){
-		QString value = getValue(item);
-		if(!value.isEmpty()){
-			value = value.replace('\'', "\\'");
-			value = value.replace('\n', "\\n");
-
-			result += QString("%1 = '%2';\n")
-					.arg(formLayout->labelForField(item)->property("text").toString())
-					.arg(value);
-		}
-	}
-
-	return result;
+                result += QString("%1 = '%2';\n")
+                          .arg(formLayout->labelForField(item)->property("text").toString())
+                          .arg(value);
+            }
+        }
+    }
+    return result;
 }
 
 QString QAdvancedInputPanel::getValue(QWidget* item){
@@ -172,4 +174,13 @@ void QAdvancedInputPanel::RecreateControls(){
 
 		lastKnownText = text;
 	}
+}
+
+void QAdvancedInputPanel::on_textEdit_textChanged()
+{
+    QSettings settings;
+    bool autoUpdate = settings.value("/settings/autoUpdate").toBool();
+
+    if(autoUpdate)
+        updateRequest();
 }

@@ -27,6 +27,9 @@ public:
 	void clear();
 	void paste();
 
+signals:
+        void updateRequest();
+
 public slots:
 	virtual void showContextMenu(const QPoint &pt);
 
@@ -43,7 +46,8 @@ private:
 	QString getValue(QWidget*);
 
 private slots:
-	void on_stackedWidget_currentChanged(int );
+        void on_textEdit_textChanged();
+ void on_stackedWidget_currentChanged(int );
 	void on_actionDialogizuoti_triggered(bool checked);
 };
 

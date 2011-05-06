@@ -28,6 +28,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->query->setPlainText(strem->readAll());
     UpdateLastUsedMenu();
+
+    QSettings settings;
+    bool autoUpdate = settings.value("/settings/autoUpdate").toBool();
+    ui->actionAuto_update->setChecked(autoUpdate);
+
+    //connect(ui->stringIn, SIGNAL(updateRequest()), this, SLOT(on_pushButton_clicked()));
 }
 
 MainWindow::~MainWindow()
@@ -70,7 +76,7 @@ void MainWindow::UpdateLastUsedMenu(){
 void MainWindow::UpdateLastUsedOrder(QString newName){
     QSettings settings;
 
-    for(int i = I_MENU_ITEMS; i > 1; i++){
+    for(int i = I_MENU_ITEMS; i > 1; i--){
         QString prevItem = QString("/files/load/%1").arg(i-1);
         QString item = QString("/files/load/%1").arg(i);
         settings.setValue(item, settings.value(prevItem));
@@ -101,6 +107,7 @@ void MainWindow::on_openFile_clicked(){
 
     if(senderAction){
         QString file = senderAction->data().toString();
+        qDebug() << file;
         LoadFromFile(file);
     }
 }
@@ -113,7 +120,11 @@ void MainWindow::on_pushButton_Go_clicked()
     strem->flush();
 
     QScriptEngine engine;
+
+
     QString in = ui->stringIn->text();
+    QScriptValue wee = engine.newObject();
+    wee.setProperty("name", "some value");
 
     QString query =  QString("%1 ; \n%2").arg(in).arg(ui->query->toPlainText());
     qDebug() << query;
@@ -162,4 +173,10 @@ void MainWindow::on_pushButton_clicked()
     on_pushButton_Go_clicked();
     ui->stringOut->selectAll();
     ui->stringOut->copy();
+}
+
+void MainWindow::on_actionAuto_update_triggered()
+{
+    QSettings settings;
+    settings.setValue("/settings/autoUpdate", QVariant(ui->actionAuto_update->isChecked()));
 }
