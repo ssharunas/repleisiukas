@@ -2,6 +2,7 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QFileDialog>
+#include <QDebug>
 
 FileLoadSave::FileLoadSave(QWidget *parent) :
     QObject(parent)
@@ -68,18 +69,14 @@ QString FileLoadSave::LoadFromFile()
 {
 	QSettings settings;
 	QString path =  settings.value("/files/lastSaveDir").toString();
-
+qDebug() << path;
 	QString fileName = QFileDialog::getOpenFileName(parent(), QString(), path);
 
 	if(!fileName.isEmpty())
 	{
-#ifdef Q_OS_UNIX
 		path = fileName.section('/', 0, -2);
-#else
-		path = fileName.section('\\', 0, -2);
-#endif
 		settings.setValue("/files/lastSaveDir", QVariant(path));
-
+qDebug() << "saved" << path << fileName;
 		return LoadFromFile(fileName);
 	}
 
@@ -168,11 +165,7 @@ void FileLoadSave::SaveToFile(QString query)
 
 	if(!fileName.isEmpty())
 	{
-#ifdef Q_OS_UNIX
 		path = fileName.section('/', 0, -2);
-#else
-		path = fileName.section('\\', 0, -2);
-#endif
 		settings.setValue("/files/lasLoadDir", QVariant(path));
 
 		SaveToFile(fileName, query);

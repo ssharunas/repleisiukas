@@ -46,11 +46,7 @@ void MainWindow::UpdateLastUsedMenu()
 	foreach (QString item, items)
 	{
 		QString name;
-#ifdef Q_OS_UNIX
-		name = item.section('/', -1);
-#else
-		name = item.section('\\', -1);
-#endif
+                name = item.section('/', -1);
 
 		ui->menuLastUsed->addAction(name, this, SLOT(on_openFile_clicked()))
 			->setData(QVariant(item));
