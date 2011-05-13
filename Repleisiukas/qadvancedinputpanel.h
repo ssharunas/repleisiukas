@@ -47,7 +47,8 @@ private:
 
 private slots:
         void on_textEdit_textChanged();
- void on_stackedWidget_currentChanged(int );
+        void onRaiseUpdateRequest();
+        void on_stackedWidget_currentChanged(int );
 	void on_actionDialogizuoti_triggered(bool checked);
 };
 

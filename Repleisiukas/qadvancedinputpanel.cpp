@@ -124,6 +124,7 @@ QWidget * QAdvancedInputPanel::createControl(QString strType, QString defVal){
 			QLineEdit *line = new QLineEdit(ui->widget);
 			widgets.append(line);
 			line->setText(defVal);
+                        connect(line, SIGNAL(textChanged(QString)), this, SLOT(onRaiseUpdateRequest()));
 			return line;
 		}
 	case Number:
@@ -176,11 +177,16 @@ void QAdvancedInputPanel::RecreateControls(){
 	}
 }
 
-void QAdvancedInputPanel::on_textEdit_textChanged()
+void QAdvancedInputPanel::onRaiseUpdateRequest()
 {
     QSettings settings;
     bool autoUpdate = settings.value("/settings/autoUpdate").toBool();
 
     if(autoUpdate)
         updateRequest();
+}
+
+void QAdvancedInputPanel::on_textEdit_textChanged()
+{
+    onRaiseUpdateRequest();
 }
