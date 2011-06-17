@@ -68,6 +68,38 @@ void MainWindow::on_openFile_clicked()
     }
 }
 
+QString MainWindow::LoadExtensions(){
+    QString result;
+
+    QSettings settings;
+    QString extensionsPath = settings.value("/settings/extensionsPath",
+                                            QApplication::applicationDirPath() + "/ext").toString();
+
+    qDebug() << "Extensions:" << extensionsPath;
+    QDir dir(extensionsPath);
+    if(dir.exists())
+    {
+        QFileInfoList list = dir.entryInfoList(QDir::Files);
+        for (int i = 0; i < list.size(); ++i)
+        {
+            QFileInfo fileInfo = list.at(i);
+
+            QFile file(fileInfo.filePath());
+
+            if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+            {
+                QTextStream stream(&file);
+                result += stream.readAll();
+
+                result += "\n ; ";
+                file.close();
+            }
+        }
+    }
+
+    return result;
+}
+
 void MainWindow::on_pushButton_Go_clicked()
 {
     fileOperations->SetLastQuery(ui->query->toPlainText());
@@ -75,13 +107,17 @@ void MainWindow::on_pushButton_Go_clicked()
     QScriptEngine engine;
     QString resources = fileOperations->LoadResource(":/scripts/extensions.js");
     QString in = ui->stringIn->text();
+    QString extensions = LoadExtensions();
 
-    QString query =  QString("%3 ;\n %1 ; \n%2")
+    qDebug() << "EXTENSIONS" << extensions << "-------------";
+
+    QString query = extensions + QString(" ; %3 ;\n %1 ; \n%2")
                      .arg(in)
                      .arg(ui->query->toPlainText())
                      .arg(resources);
 
     qDebug() << query;
+
     QScriptValue value = engine.evaluate(query);
 
     if(value.isError())
@@ -121,4 +157,14 @@ void MainWindow::on_actionAuto_update_triggered()
 void MainWindow::on_actionExecute_triggered()
 {
     on_pushButton_Go_clicked();
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    QDir dir = QDir("C:\\");
+    QStringList l;
+    l << "inetpub\*\en-US";
+    dir.setNameFilters(l);
+
+    qDebug() << dir.entryList();
 }
