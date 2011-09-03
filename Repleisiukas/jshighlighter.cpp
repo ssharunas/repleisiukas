@@ -70,8 +70,8 @@ JSHighlighter::JSHighlighter(QTextDocument *parent)
     commentEndExpression = QRegExp("\\*/");
 
     QTextCharFormat format;
-    format.setBackground(QColor(0xff,0xc5,0x7d));
-    rule.pattern = QRegExp("/[^/]*/");
+	format.setForeground(Qt::darkGray);
+	rule.pattern = QRegExp("//[^\n]+");
     rule.format = format;
     highlightingRules.append(rule);
 }

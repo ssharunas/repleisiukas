@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QDebug>
+#include <QScriptValueIterator>
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -181,7 +182,15 @@ void MainWindow::on_pushButton_Go_clicked()
 	QScriptValue value = engine.evaluate(query);
 
 	if(value.isError())
+	{
 		ui->stringOut->setPlainText("Klaida: " + value.toString());
+
+		QScriptValueIterator it(value);
+		 while (it.hasNext()) {
+			 it.next();
+			 qDebug() << it.name() << ": " << it.value().toString();
+		 }
+	}
 	else
 		ui->stringOut->setPlainText(value.toString());
 }
