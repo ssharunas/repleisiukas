@@ -154,7 +154,7 @@
      <x>0</x>
      <y>0</y>
      <width>677</width>
-     <height>18</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuQueris">
@@ -176,6 +176,8 @@
      <string>Settings</string>
     </property>
     <addaction name="actionAuto_update"/>
+    <addaction name="actionZoom_In"/>
+    <addaction name="actionZoom_Out"/>
    </widget>
    <addaction name="menuQueris"/>
    <addaction name="menuSettings"/>
@@ -191,12 +193,12 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionSave">
    <property name="text">
-    <string>Save</string>
+    <string>Save...</string>
    </property>
   </action>
   <action name="actionLoad">
    <property name="text">
-    <string>Load</string>
+    <string>Load...</string>
    </property>
   </action>
   <action name="actionAuto_update">
@@ -213,6 +215,16 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Enter</string>
+   </property>
+  </action>
+  <action name="actionZoom_In">
+   <property name="text">
+    <string>Zoom In</string>
+   </property>
+  </action>
+  <action name="actionZoom_Out">
+   <property name="text">
+    <string>Zoom Out</string>
    </property>
   </action>
  </widget>

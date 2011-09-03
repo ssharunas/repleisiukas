@@ -34,12 +34,14 @@ QAdvancedInputPanel::~QAdvancedInputPanel()
 
 void QAdvancedInputPanel::on_actionDialogizuoti_triggered(bool checked)
 {
+	qDebug() << "trig" << checked;
     ui->stackedWidget->setCurrentIndex(checked);
 }
 
 void QAdvancedInputPanel::Dialogize()
 {
-    ui->actionDialogizuoti->setChecked(true);
+	//ui->actionDialogizuoti->setChecked(true);
+	ui->actionDialogizuoti->trigger();
 }
 
 QString QAdvancedInputPanel::text(){
@@ -179,7 +181,7 @@ void QAdvancedInputPanel::RecreateControls(){
                 formLayout->addRow(captured[2], createControl(captured[1], captured[3]));
             }
 
-            qDebug() << index << exp.captureCount() << exp.capturedTexts();
+//            qDebug() << index << exp.captureCount() << exp.capturedTexts();
         }
 
         lastKnownText = text;

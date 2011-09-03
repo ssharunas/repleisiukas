@@ -32,8 +32,11 @@ JSHighlighter::JSHighlighter(QTextDocument *parent)
     rule.format = functionFormat;
     highlightingRules.append(rule);
 
-    QStringList keywordPatterns;
 
+	keywordFormat.setForeground(Qt::darkBlue);
+	keywordFormat.setFontWeight(QFont::Bold);
+
+	QStringList keywordPatterns;
     keywordPatterns << "\\bin\\b" << "\\bif\\b" << "\\bfor\\b"
             << "\\bwhile\\b" << "\\bfinally\\b" << "\\bvar\\b"
             << "\\bnew\\b" << "\\bfunction\\b" << "\\bdo\\b"
@@ -65,9 +68,6 @@ JSHighlighter::JSHighlighter(QTextDocument *parent)
 
     commentStartExpression = QRegExp("/\\*");
     commentEndExpression = QRegExp("\\*/");
-
-    keywordFormat.setForeground(Qt::darkBlue);
-    keywordFormat.setFontWeight(QFont::Bold);
 
     QTextCharFormat format;
     format.setBackground(QColor(0xff,0xc5,0x7d));

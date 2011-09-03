@@ -27,9 +27,8 @@ private:
 private:
 
     QString preProxessQuey(QString query);
-    QString LoadExtensions();
-    void UpdateLastUsedOrder(QString newName);
-    void LoadFromFile(QString file);
+	QString LoadExtensions();
+	void LoadQueryToGUI(QString query);
 
     QString GetAutoLoadText(QString script);
 
@@ -43,6 +42,8 @@ private slots:
     void on_actionSave_triggered();
     void on_pushButton_Go_clicked();
     void on_actionExecute_triggered();
+	void on_actionZoom_In_triggered();
+	void on_actionZoom_Out_triggered();
 };
 
 #endif // MAINWINDOW_H

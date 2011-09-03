@@ -9,219 +9,233 @@
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
-        QMainWindow(parent),
-        ui(new Ui::MainWindow)
+	QMainWindow(parent),
+	ui(new Ui::MainWindow)
 {
-    QCoreApplication::setOrganizationName("SoftDent");
-    QCoreApplication::setOrganizationDomain("softdent.lt");
-    QCoreApplication::setApplicationName("Repleisiukas");
+	QCoreApplication::setOrganizationName("SoftDent");
+	QCoreApplication::setOrganizationDomain("softdent.lt");
+	QCoreApplication::setApplicationName("Repleisiukas");
 
-    fileOperations = new FileLoadSave(this);
-    ui->setupUi(this);
-    highlighter = new JSHighlighter(ui->query->document());
+	fileOperations = new FileLoadSave(this);
+	ui->setupUi(this);
+	highlighter = new JSHighlighter(ui->query->document());
 
-    ui->query->addAction(ui->actionExecute);
-    ui->query->setPlainText(fileOperations->GetLastQuery());
-    UpdateLastUsedMenu();
+	ui->query->addAction(ui->actionExecute);
+	ui->query->setPlainText(fileOperations->GetLastQuery());
+	UpdateLastUsedMenu();
 
-    QSettings settings;
-    bool autoUpdate = settings.value("/settings/autoUpdate").toBool();
-    ui->actionAuto_update->setChecked(autoUpdate);
+	QSettings settings;
+	bool autoUpdate = settings.value("/settings/autoUpdate").toBool();
+	ui->actionAuto_update->setChecked(autoUpdate);
 
-    connect(fileOperations, SIGNAL(UpdateLastUsed()), this, SLOT(UpdateLastUsedMenu()));
-    connect(ui->stringIn, SIGNAL(updateRequest()), this, SLOT(on_pushButton_Go_clicked()));
+	connect(fileOperations, SIGNAL(UpdateLastUsed()), this, SLOT(UpdateLastUsedMenu()));
+	connect(ui->stringIn, SIGNAL(updateRequest()), this, SLOT(on_pushButton_Go_clicked()));
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
-    delete highlighter;
+	delete ui;
+	delete highlighter;
 }
 
 void MainWindow::UpdateLastUsedMenu()
 {
-    ui->menuLastUsed->clear();
-    QStringList items = fileOperations->GetLastUsedMenuEntries();
+	ui->menuLastUsed->clear();
+	QStringList items = fileOperations->GetLastUsedMenuEntries();
 
-    foreach (QString item, items)
-    {
-        QString name;
-        name = item.section('/', -1);
+	foreach (QString item, items)
+	{
+		QString name;
+		name = item.section('/', -1);
 
-        ui->menuLastUsed->addAction(name, this, SLOT(on_openFile_clicked()))
-                ->setData(QVariant(item));
-    }
+		ui->menuLastUsed->addAction(name, this, SLOT(on_openFile_clicked()))
+				->setData(QVariant(item));
+	}
 }
 
 void MainWindow::on_openFile_clicked()
 {
-    QAction *senderAction = dynamic_cast<QAction*>(sender());
+	QAction *senderAction = dynamic_cast<QAction*>(sender());
 
-    if(senderAction){
-        QString file = senderAction->data().toString();
-        qDebug() << "trying to open file" << file;
+	if(senderAction){
+		QString file = senderAction->data().toString();
+		qDebug() << "trying to open file" << file;
 
-        QString string = fileOperations->LoadFromFile(file);
+		LoadQueryToGUI(fileOperations->LoadFromFile(file));
+	}
+}
 
-        if(!string.isNull())
-            ui->query->setPlainText(string);
-    }
+void MainWindow::LoadQueryToGUI(QString query)
+{
+	if(!query.isNull())
+	{
+		ui->query->setPlainText(query);
+
+		QString autoload = GetAutoLoadText(query);
+		if(!autoload.isNull())
+		{
+			ui->stringIn->setText(autoload);
+			ui->stringIn->Dialogize();
+		}
+	}
 }
 
 QString MainWindow::GetAutoLoadText(QString script){
-    QString result;
-    int start = script.indexOf("--<autoload>--");
-    if(start != -1)
-    {
-        int end = script.indexOf("--</autoload>--");
+	QString result;
+	const char * START_TAG = "--<autoload>--";
 
-        if(end != -1 && end > start)
-        {
-            result = script.mid(start, end - start);
-        }
-    }
+	int start = script.indexOf(START_TAG);
+	if(start != -1)
+	{
+		start += strlen(START_TAG);
+		int end = script.indexOf("--</autoload>--", start);
 
-    return result;
+		if(end != -1 && end > start)
+		{
+			result = script.mid(start, end - start);
+		}
+	}
+
+	return result;
 }
 
 QString MainWindow::LoadExtensions(){
-    QString result;
+	QString result;
 
-    QSettings settings;
-    QString extensionsPath = settings.value("/settings/extensionsPath",
-                                            QApplication::applicationDirPath() + "/ext").toString();
+	QSettings settings;
+	QString extensionsPath = settings.value("/settings/extensionsPath",
+											QApplication::applicationDirPath() + "/ext").toString();
 
-    qDebug() << "Extensions:" << extensionsPath;
-    QDir dir(extensionsPath);
-    if(dir.exists())
-    {
-        QFileInfoList list = dir.entryInfoList(QDir::Files);
-        for (int i = 0; i < list.size(); ++i)
-        {
-            QFileInfo fileInfo = list.at(i);
+	qDebug() << "Extensions:" << extensionsPath;
+	QDir dir(extensionsPath);
+	if(dir.exists())
+	{
+		QFileInfoList list = dir.entryInfoList(QDir::Files);
+		for (int i = 0; i < list.size(); ++i)
+		{
+			QFileInfo fileInfo = list.at(i);
 
-            QFile file(fileInfo.filePath());
+			QFile file(fileInfo.filePath());
 
-            if (file.open(QIODevice::ReadOnly | QIODevice::Text))
-            {
-                QTextStream stream(&file);
-                result += stream.readAll();
+			if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+			{
+				QTextStream stream(&file);
+				result += stream.readAll();
 
-                result += "\n ; ";
-                file.close();
-            }
-        }
-    }
+				result += "\n ; ";
+				file.close();
+			}
+		}
+	}
 
-    return result;
+	return result;
 }
 
 QString MainWindow::preProxessQuey(QString query)
 {
-    QString result;
-    bool changed = false;
-    int lastIndex = 0;
-    do
-    {
-        changed = false;
-        int from = query.indexOf("\"\"\"", lastIndex);
-        int to = query.indexOf("\"\"\"", from + 1);
-        if(from >= 0 && to - from >= 3)
-        {
-            result += query.mid(lastIndex, from - lastIndex);
+	QString result;
+	bool changed = false;
+	int lastIndex = 0;
+	do
+	{
+		changed = false;
+		int from = query.indexOf("\"\"\"", lastIndex);
+		int to = query.indexOf("\"\"\"", from + 1);
+		if(from >= 0 && to - from >= 3)
+		{
+			result += query.mid(lastIndex, from - lastIndex);
 
-            result += "'";
-            result += query.mid(from + 3, to - 3 - from).replace('\'', "\\'").replace('\r', "").replace('\n', "\\n' + \n'");
-            result += "'";
-            lastIndex = to + 3;
+			result += "'";
+			result += query.mid(from + 3, to - 3 - from).replace('\'', "\\'").replace('\r', "").replace('\n', "\\n' + \n'");
+			result += "'";
+			lastIndex = to + 3;
 
-            changed = true;
-        }
-    }while(changed);
+			changed = true;
+		}
+	}while(changed);
 
-    result += query.mid(lastIndex);
+	result += query.mid(lastIndex);
 
-    return result;
+	return result;
 }
 
 void MainWindow::on_pushButton_Go_clicked()
 {
-    fileOperations->SetLastQuery(ui->query->toPlainText());
+	fileOperations->SetLastQuery(ui->query->toPlainText());
 
-    QScriptEngine engine;
-    QString resources = fileOperations->LoadResource(":/scripts/extensions.js");
-    QString in = ui->stringIn->text();
-    QString extensions = LoadExtensions();
+	QScriptEngine engine;
+	QString resources = fileOperations->LoadResource(":/scripts/extensions.js");
+	QString in = ui->stringIn->text();
+	QString extensions = LoadExtensions();
 
-    //qDebug() << "EXTENSIONS" << extensions << "-------------";
+	//qDebug() << "EXTENSIONS" << extensions << "-------------";
 
-    QString uiQuery = preProxessQuey(ui->query->toPlainText());
-    qDebug() << uiQuery;
-    QString query = extensions + QString(" ; %3 ;\n %1 ; \n%2")
-                     .arg(in)
-                     .arg(uiQuery)
-                     .arg(resources);
+	QString uiQuery = preProxessQuey(ui->query->toPlainText());
+	QString query = extensions + QString(" ; %3 ;\n %1 ; \n%2")
+			.arg(in)
+			.arg(uiQuery)
+			.arg(resources);
 
-    //qDebug() << query;
+	qDebug() << query;
 
-    QScriptValue value = engine.evaluate(query);
+	QScriptValue value = engine.evaluate(query);
 
-    if(value.isError())
-        ui->stringOut->setPlainText("Klaida: " + value.toString());
-    else
-        ui->stringOut->setPlainText(value.toString());
+	if(value.isError())
+		ui->stringOut->setPlainText("Klaida: " + value.toString());
+	else
+		ui->stringOut->setPlainText(value.toString());
 }
 
 void MainWindow::on_actionSave_triggered()
 {
-    fileOperations->SaveToFile(ui->query->toPlainText());
+	fileOperations->SaveToFile(ui->query->toPlainText());
 }
 
 void MainWindow::on_actionLoad_triggered()
 {
-    QString string = fileOperations->LoadFromFile();
-
-    if(!string.isNull())
-        ui->query->setPlainText(string);
-
-    QString autoload = GetAutoLoadText(string);
-    if(!autoload.isNull())
-    {
-        ui->stringIn->setText(string);
-        ui->stringIn->Dialogize();
-    }
+	LoadQueryToGUI(fileOperations->LoadFromFile());
 }
 
 void MainWindow::on_pushButton_clicked()
 {
-    ui->stringIn->clear();
-    ui->stringIn->paste();
-    on_pushButton_Go_clicked();
-    ui->stringOut->selectAll();
-    ui->stringOut->copy();
+	ui->stringIn->clear();
+	ui->stringIn->paste();
+	on_pushButton_Go_clicked();
+	ui->stringOut->selectAll();
+	ui->stringOut->copy();
 }
 
 void MainWindow::on_actionAuto_update_triggered()
 {
-    QSettings settings;
-    settings.setValue("/settings/autoUpdate", QVariant(ui->actionAuto_update->isChecked()));
+	QSettings settings;
+	settings.setValue("/settings/autoUpdate", QVariant(ui->actionAuto_update->isChecked()));
 }
 
 void MainWindow::on_actionExecute_triggered()
 {
-    on_pushButton_Go_clicked();
+	on_pushButton_Go_clicked();
 }
 
 void MainWindow::on_pushButton_2_clicked()
 {
-    QString dir = QFileDialog::getExistingDirectory(this);
+	QString dir = QFileDialog::getExistingDirectory(this);
 
-    if(!dir.isEmpty())
-    {
-        if(!(dir.endsWith('/') || dir.endsWith('\\')))
-            dir.append("/");
-        dir.append("*");
+	if(!dir.isEmpty())
+	{
+		if(!(dir.endsWith('/') || dir.endsWith('\\')))
+			dir.append("/");
+		dir.append("*");
 
-        ui->inFiles->addItem(dir);
-    }
+		ui->inFiles->addItem(dir);
+	}
+}
+
+void MainWindow::on_actionZoom_In_triggered()
+{
+	ui->query->zoomIn();
+}
+
+void MainWindow::on_actionZoom_Out_triggered()
+{
+	ui->query->zoomOut();
 }
