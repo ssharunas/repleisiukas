@@ -68,6 +68,22 @@ void MainWindow::on_openFile_clicked()
     }
 }
 
+QString MainWindow::GetAutoLoadText(QString script){
+    QString result;
+    int start = script.indexOf("--<autoload>--");
+    if(start != -1)
+    {
+        int end = script.indexOf("--</autoload>--");
+
+        if(end != -1 && end > start)
+        {
+            result = script.mid(start, end - start);
+        }
+    }
+
+    return result;
+}
+
 QString MainWindow::LoadExtensions(){
     QString result;
 
@@ -100,6 +116,34 @@ QString MainWindow::LoadExtensions(){
     return result;
 }
 
+QString MainWindow::preProxessQuey(QString query)
+{
+    QString result;
+    bool changed = false;
+    int lastIndex = 0;
+    do
+    {
+        changed = false;
+        int from = query.indexOf("\"\"\"", lastIndex);
+        int to = query.indexOf("\"\"\"", from + 1);
+        if(from >= 0 && to - from >= 3)
+        {
+            result += query.mid(lastIndex, from - lastIndex);
+
+            result += "'";
+            result += query.mid(from + 3, to - 3 - from).replace('\'', "\\'").replace('\r', "").replace('\n', "\\n' + \n'");
+            result += "'";
+            lastIndex = to + 3;
+
+            changed = true;
+        }
+    }while(changed);
+
+    result += query.mid(lastIndex);
+
+    return result;
+}
+
 void MainWindow::on_pushButton_Go_clicked()
 {
     fileOperations->SetLastQuery(ui->query->toPlainText());
@@ -109,14 +153,16 @@ void MainWindow::on_pushButton_Go_clicked()
     QString in = ui->stringIn->text();
     QString extensions = LoadExtensions();
 
-    qDebug() << "EXTENSIONS" << extensions << "-------------";
+    //qDebug() << "EXTENSIONS" << extensions << "-------------";
 
+    QString uiQuery = preProxessQuey(ui->query->toPlainText());
+    qDebug() << uiQuery;
     QString query = extensions + QString(" ; %3 ;\n %1 ; \n%2")
                      .arg(in)
-                     .arg(ui->query->toPlainText())
+                     .arg(uiQuery)
                      .arg(resources);
 
-    qDebug() << query;
+    //qDebug() << query;
 
     QScriptValue value = engine.evaluate(query);
 
@@ -137,6 +183,13 @@ void MainWindow::on_actionLoad_triggered()
 
     if(!string.isNull())
         ui->query->setPlainText(string);
+
+    QString autoload = GetAutoLoadText(string);
+    if(!autoload.isNull())
+    {
+        ui->stringIn->setText(string);
+        ui->stringIn->Dialogize();
+    }
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -161,10 +214,14 @@ void MainWindow::on_actionExecute_triggered()
 
 void MainWindow::on_pushButton_2_clicked()
 {
-    QDir dir = QDir("C:\\");
-    QStringList l;
-    l << "inetpub\*\en-US";
-    dir.setNameFilters(l);
+    QString dir = QFileDialog::getExistingDirectory(this);
 
-    qDebug() << dir.entryList();
+    if(!dir.isEmpty())
+    {
+        if(!(dir.endsWith('/') || dir.endsWith('\\')))
+            dir.append("/");
+        dir.append("*");
+
+        ui->inFiles->addItem(dir);
+    }
 }

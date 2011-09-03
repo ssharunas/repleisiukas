@@ -31,6 +31,7 @@ class JSHighlighter : public QSyntaxHighlighter
 		 QTextCharFormat keywordFormat;
 		 QTextCharFormat singleLineCommentFormat;
 		 QTextCharFormat multiLineCommentFormat;
+                 QTextCharFormat multiLineStringFormat;
 		 QTextCharFormat quotationFormat;
 		 QTextCharFormat quotationFormat2;
 		 QTextCharFormat functionFormat;

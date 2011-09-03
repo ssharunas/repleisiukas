@@ -26,12 +26,14 @@ public:
 	QString text();
 	void clear();
 	void paste();
+        void setText(QString text);
 
 signals:
         void updateRequest();
 
 public slots:
 	virtual void showContextMenu(const QPoint &pt);
+        void Dialogize();
 
 private:
 	QFormLayout *formLayout;

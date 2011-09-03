@@ -26,9 +26,12 @@ private:
 
 private:
 
+    QString preProxessQuey(QString query);
     QString LoadExtensions();
     void UpdateLastUsedOrder(QString newName);
     void LoadFromFile(QString file);
+
+    QString GetAutoLoadText(QString script);
 
 private slots:
     void on_pushButton_2_clicked();
