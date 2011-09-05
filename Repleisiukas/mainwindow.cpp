@@ -172,10 +172,10 @@ void MainWindow::on_pushButton_Go_clicked()
 	//qDebug() << "EXTENSIONS" << extensions << "-------------";
 
 	QString uiQuery = preProxessQuey(ui->query->toPlainText());
-	QString query = extensions + QString(" ; %3 ;\n %1 ; \n%2")
+        QString query = resources + QString(" ; %3 ;\n %1 ; \n%2")
 			.arg(in)
 			.arg(uiQuery)
-			.arg(resources);
+                        .arg(extensions);
 
 	qDebug() << query;
 
