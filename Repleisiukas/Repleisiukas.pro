@@ -14,12 +14,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
 	ui/jshighlighter.cpp \
     qadvancedinputpanel.cpp \
-	presentation/fileloadsave.cpp
+	presentation/fileloadsave.cpp \
+    presentation/queryexecution.cpp
 
 HEADERS  += mainwindow.h \
 	ui/jshighlighter.h \
     qadvancedinputpanel.h \
-	presentation/fileloadsave.h
+	presentation/fileloadsave.h \
+    presentation/queryexecution.h
 
 FORMS    += mainwindow.ui \
     qadvancedinputpanel.ui
@@ -29,6 +31,8 @@ OTHER_FILES += \
 
 RESOURCES += \
 	other/resources.qrc
+
+
 
 
 

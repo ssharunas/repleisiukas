@@ -5,7 +5,7 @@
 #include <QDebug>
 
 FileLoadSave::FileLoadSave(QWidget *parent) :
-    QObject(parent)
+	QObject(parent)
 {
 	DEFAULT_MENU_ITEMS_COUNT = 10;
 	strem = 0;
@@ -69,14 +69,14 @@ QString FileLoadSave::LoadFromFile()
 {
 	QSettings settings;
 	QString path =  settings.value("/files/lastSaveDir").toString();
-qDebug() << path;
+	qDebug() << path;
 	QString fileName = QFileDialog::getOpenFileName(parent(), QString(), path);
 
 	if(!fileName.isEmpty())
 	{
 		path = fileName.section('/', 0, -2);
 		settings.setValue("/files/lastSaveDir", QVariant(path));
-qDebug() << "saved" << path << fileName;
+		qDebug() << "saved" << path << fileName;
 		return LoadFromFile(fileName);
 	}
 
@@ -93,7 +93,7 @@ QString FileLoadSave::LoadFromFile(QString filename)
 		if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
 		{
 			QMessageBox::warning(parent(),
-				"Could not open file", "could not open file for reading.");
+								 "Could not open file", "could not open file for reading.");
 		}else
 		{
 			QTextStream stream(&file);
@@ -181,7 +181,7 @@ void FileLoadSave::SaveToFile(QString fileName, QString query)
 		if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
 		{
 			QMessageBox::warning(parent(),
-				"Could not open file", "Could not open file for writing.");
+								 "Could not open file", "Could not open file for writing.");
 		}
 
 		QTextStream stream(&file);
@@ -195,4 +195,24 @@ QString FileLoadSave::LoadResource(QString path){
 	resourceFile.open(QIODevice::ReadOnly);
 	QTextStream stream(&resourceFile);
 	return stream.readAll();
+}
+
+QString FileLoadSave::GetAutoLoadText(QString script){
+	QString result;
+	const char * START_TAG = "--<autoload>--";
+	const char * END_TAG = "--</autoload>--";
+
+	int start = script.indexOf(START_TAG);
+	if(start != -1)
+	{
+		start += strlen(START_TAG);
+		int end = script.indexOf(END_TAG, start);
+
+		if(end != -1 && end > start)
+		{
+			result = script.mid(start, end - start);
+		}
+	}
+
+	return result;
 }

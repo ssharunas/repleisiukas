@@ -1,13 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QScriptEngine>
 #include <QDebug>
 #include <QFile>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSettings>
 #include <QDebug>
-#include <QScriptValueIterator>
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -18,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QCoreApplication::setApplicationName("Repleisiukas");
 
 	fileOperations = new FileLoadSave(this);
+	queryExecution = new QueryExecution(fileOperations, this);
 	ui->setupUi(this);
 	highlighter = new JSHighlighter(ui->query->document());
 
@@ -72,7 +71,7 @@ void MainWindow::LoadQueryToGUI(QString query)
 	{
 		ui->query->setPlainText(query);
 
-		QString autoload = GetAutoLoadText(query);
+		QString autoload = fileOperations->GetAutoLoadText(query);
 		if(!autoload.isNull())
 		{
 			ui->stringIn->setText(autoload);
@@ -81,118 +80,11 @@ void MainWindow::LoadQueryToGUI(QString query)
 	}
 }
 
-QString MainWindow::GetAutoLoadText(QString script){
-	QString result;
-	const char * START_TAG = "--<autoload>--";
-
-	int start = script.indexOf(START_TAG);
-	if(start != -1)
-	{
-		start += strlen(START_TAG);
-		int end = script.indexOf("--</autoload>--", start);
-
-		if(end != -1 && end > start)
-		{
-			result = script.mid(start, end - start);
-		}
-	}
-
-	return result;
-}
-
-QString MainWindow::LoadExtensions(){
-	QString result;
-
-	QSettings settings;
-	QString extensionsPath = settings.value("/settings/extensionsPath",
-											QApplication::applicationDirPath() + "/ext").toString();
-
-	qDebug() << "Extensions:" << extensionsPath;
-	QDir dir(extensionsPath);
-	if(dir.exists())
-	{
-		QFileInfoList list = dir.entryInfoList(QDir::Files);
-		for (int i = 0; i < list.size(); ++i)
-		{
-			QFileInfo fileInfo = list.at(i);
-
-			QFile file(fileInfo.filePath());
-
-			if (file.open(QIODevice::ReadOnly | QIODevice::Text))
-			{
-				QTextStream stream(&file);
-				result += stream.readAll();
-
-				result += "\n ; ";
-				file.close();
-			}
-		}
-	}
-
-	return result;
-}
-
-QString MainWindow::preProxessQuey(QString query)
-{
-	QString result;
-	bool changed = false;
-	int lastIndex = 0;
-	do
-	{
-		changed = false;
-		int from = query.indexOf("\"\"\"", lastIndex);
-		int to = query.indexOf("\"\"\"", from + 1);
-		if(from >= 0 && to - from >= 3)
-		{
-			result += query.mid(lastIndex, from - lastIndex);
-
-			result += "'";
-			result += query.mid(from + 3, to - 3 - from).replace('\'', "\\'").replace('\r', "").replace('\n', "\\n' + \n'");
-			result += "'";
-			lastIndex = to + 3;
-
-			changed = true;
-		}
-	}while(changed);
-
-	result += query.mid(lastIndex);
-
-	return result;
-}
-
 void MainWindow::on_pushButton_Go_clicked()
 {
 	fileOperations->SetLastQuery(ui->query->toPlainText());
-
-	QScriptEngine engine;
-	QString resources = fileOperations->LoadResource(":/scripts/extensions.js");
-	QString in = ui->stringIn->text();
-	QString extensions = LoadExtensions();
-
-	//qDebug() << "EXTENSIONS" << extensions << "-------------";
-
-	QString uiQuery = preProxessQuey(ui->query->toPlainText());
-        QString query = resources + QString(" ; %3 ;\n %1 ; \n%2")
-			.arg(in)
-			.arg(uiQuery)
-                        .arg(extensions);
-
-	qDebug() << query;
-
-	QScriptValue value = engine.evaluate(query);
-
-	if(value.isError())
-	{
-		ui->stringOut->setPlainText("Klaida: " + value.toString());
-
-		QScriptValueIterator it(value);
-		 while (it.hasNext()) {
-			 it.next();
-			 qDebug() << it.name() << ": " << it.value().toString();
-		 }
-	}
-	else
-		ui->stringOut->setPlainText(value.toString());
+	ui->stringOut->setPlainText(
+				queryExecution->Execute(ui->query->toPlainText(), ui->stringIn->text()));
 }
 
 void MainWindow::on_actionSave_triggered()

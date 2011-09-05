@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "ui/jshighlighter.h"
 #include "presentation/fileloadsave.h"
+#include "presentation/queryexecution.h"
 
 namespace Ui {
     class MainWindow;
@@ -23,14 +24,11 @@ private:
     JSHighlighter *highlighter;
 
     FileLoadSave* fileOperations;
+	QueryExecution *queryExecution;
 
 private:
 
-    QString preProxessQuey(QString query);
-	QString LoadExtensions();
 	void LoadQueryToGUI(QString query);
-
-    QString GetAutoLoadText(QString script);
 
 private slots:
     void on_pushButton_2_clicked();
