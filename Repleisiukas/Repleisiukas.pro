@@ -12,23 +12,23 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    jshighlighter.cpp \
+	ui/jshighlighter.cpp \
     qadvancedinputpanel.cpp \
-    fileloadsave.cpp
+	presentation/fileloadsave.cpp
 
 HEADERS  += mainwindow.h \
-    jshighlighter.h \
+	ui/jshighlighter.h \
     qadvancedinputpanel.h \
-    fileloadsave.h
+	presentation/fileloadsave.h
 
 FORMS    += mainwindow.ui \
     qadvancedinputpanel.ui
 
 OTHER_FILES += \
-    extensions.js
+	other/extensions.js
 
 RESOURCES += \
-    resources.qrc
+	other/resources.qrc
 
 
 

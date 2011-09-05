@@ -175,6 +175,7 @@ void QAdvancedInputPanel::RecreateControls(){
         for(int i = 0; i < splited.count(); i++){
             QRegExp exp = QRegExp("(\\w+)\\s+([\\w\\d]+)\\s*=\\s*(.+)");
             int index = exp.indexIn(splited[i]);
+			Q_UNUSED(index);
 
             if(exp.captureCount() >= 3){
                 QStringList captured = exp.capturedTexts();

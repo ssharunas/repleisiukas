@@ -2,8 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "jshighlighter.h"
-#include "fileloadsave.h"
+#include "ui/jshighlighter.h"
+#include "presentation/fileloadsave.h"
 
 namespace Ui {
     class MainWindow;

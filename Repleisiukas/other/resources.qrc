@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/scripts">
-        <file>extensions.js</file>
+		<file>extensions.js</file>
     </qresource>
 </RCC>
