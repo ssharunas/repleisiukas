@@ -12,19 +12,16 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    dialog.cpp \
     jshighlighter.cpp \
     qadvancedinputpanel.cpp \
     fileloadsave.cpp
 
 HEADERS  += mainwindow.h \
-    dialog.h \
     jshighlighter.h \
     qadvancedinputpanel.h \
     fileloadsave.h
 
 FORMS    += mainwindow.ui \
-    dialog.ui \
     qadvancedinputpanel.ui
 
 OTHER_FILES += \
@@ -32,3 +29,6 @@ OTHER_FILES += \
 
 RESOURCES += \
     resources.qrc
+
+
+
