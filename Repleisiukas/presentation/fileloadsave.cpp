@@ -21,9 +21,14 @@ FileLoadSave::FileLoadSave(QWidget *parent) :
 
 	last = new QFile(tempFilename);
 	if (last->open(QIODevice::ReadWrite | QIODevice::Text))
+	{
 		strem = new QTextStream(last);
+		strem->setCodec("UTF-8");
+	}
 	else
+	{
 		last = 0;
+	}
 }
 
 FileLoadSave::~FileLoadSave()
@@ -97,6 +102,7 @@ QString FileLoadSave::LoadFromFile(QString filename)
 		}else
 		{
 			QTextStream stream(&file);
+			stream.setCodec("UTF-8");
 			result = stream.readAll();
 			UpdateLastUsedOrder(filename);
 		}
@@ -185,6 +191,7 @@ void FileLoadSave::SaveToFile(QString fileName, QString query)
 		}
 
 		QTextStream stream(&file);
+		stream.setCodec("UTF-8");
 		stream << query;
 		UpdateLastUsedOrder(fileName);
 	}
@@ -194,6 +201,7 @@ QString FileLoadSave::LoadResource(QString path){
 	QFile resourceFile(path);
 	resourceFile.open(QIODevice::ReadOnly);
 	QTextStream stream(&resourceFile);
+	stream.setCodec("UTF-8");
 	return stream.readAll();
 }
 

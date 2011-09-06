@@ -86,8 +86,8 @@ void MainWindow::LoadQueryToGUI(QString query)
 void MainWindow::on_pushButton_Go_clicked()
 {
 	fileOperations->SetLastQuery(ui->query->toPlainText());
-	ui->stringOut->setPlainText(
-				queryExecution->Execute(ui->query->toPlainText(), ui->stringIn->text()));
+        QString result = queryExecution->Execute(ui->query->toPlainText(), ui->stringIn->text());
+        ui->stringOut->setPlainText(result);
 }
 
 void MainWindow::on_actionSave_triggered()
