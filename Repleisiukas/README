@@ -1,0 +1,69 @@
+Repleisiukas gonna replace the world.
+
+
+Main purpose of this program is to replace the text using JavaScript scripts.
+Program input field - your primary text, query field and output field. Simple as that.
+
+Queries are writen in standart Javascript, only one improvement is made - pythonish
+multinine comments.
+As additinal object help() function is added as extension. If you need more extensions
+create folder "ext" in your startup directory: all files in that directory will be
+autoloaded every time script is executed.
+
+Input panel can be transformed into fields colletion. To achieve that you should enter text
+text varName=defaultValue;;
+into input field, right click it and select "Dialogizuoti". Now you can use variable "varName"
+in your scripts. Type help("dialogizuoti") in quey field for more information.
+Add dialogization (I like to invent words :)) code in your query between tags "--<autoload>--"
+and "--</autoload>--", if you want to autoload dialogized window form.
+
+Examples:
+
+1) Math example:
+INPUT: 123
+QUERY: wee + 2
+OUTPUT: 125
+
+2) String example
+INPUT: abcd
+QUERY: wee.replace('a', 'xxx')
+OUTPUT: xxxbcd
+
+3) RegExp replace
+INPUT:
+	<input id="a1" />
+	<input id="a2" />
+	<input id="a3" />
+
+QUERY: wee.replace(/a(\d)/g, function(x,input){ return "a" + (input * 1 + 1)});
+OUTPUT:
+	<input id="a2" />
+	<input id="a3" />
+	<input id="a4" />
+
+4) Multiline strings
+
+2) String example
+INPUT: void;kill;bill
+QUERY:
+	lines = wee.split(';')
+
+	result = """%type %action(int %var){
+		//make shure "it" dies 'correctly'
+		if(!dead(%var)){
+			die(%var);
+		}
+	}"""
+
+	result = result.replace("%type", lines[0]);
+	result = result.replace("%action", lines[1]);
+	result = result.replace(/%var/g, lines[2]);
+
+	result;
+OUTPUT:
+	void kill(int bill){
+		//make shure "it" dies 'correctly'
+		if(!dead(bill)){
+			die(bill);
+		}
+	}
