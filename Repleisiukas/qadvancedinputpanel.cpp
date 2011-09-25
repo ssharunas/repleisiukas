@@ -40,8 +40,9 @@ void QAdvancedInputPanel::on_actionDialogizuoti_triggered(bool checked)
 
 void QAdvancedInputPanel::Dialogize()
 {
-	//ui->actionDialogizuoti->setChecked(true);
-	ui->actionDialogizuoti->trigger();
+	ui->actionDialogizuoti->setChecked(true);
+
+	on_actionDialogizuoti_triggered(true);
 }
 
 QString QAdvancedInputPanel::toPlainText()

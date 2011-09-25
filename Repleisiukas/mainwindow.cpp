@@ -6,7 +6,7 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QDebug>
-
+#include <QShortcut>
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow)
@@ -27,6 +27,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	QSettings settings;
 	bool autoUpdate = settings.value("/settings/autoUpdate").toBool();
 	ui->actionAuto_update->setChecked(autoUpdate);
+
+        QShortcut* shortcut = new QShortcut(QKeySequence(tr("Ctrl+Return")), ui->query);
+        connect(shortcut, SIGNAL(activated()), ui->actionExecute, SLOT(trigger()));
 
 	connect(fileOperations, SIGNAL(UpdateLastUsed()), this, SLOT(UpdateLastUsedMenu()));
 	connect(ui->stringIn, SIGNAL(updateRequest()), this, SLOT(on_pushButton_Go_clicked()));
@@ -113,8 +116,8 @@ void MainWindow::LoadQueryToGUI(QString query)
 void MainWindow::on_pushButton_Go_clicked()
 {
 	fileOperations->SetLastQuery(ui->query->toPlainText());
-	ui->stringOut->setPlainText(
-				queryExecution->Execute(ui->query->toPlainText(), ui->stringIn->text()));
+        QString result = queryExecution->Execute(ui->query->toPlainText(), ui->stringIn->text());
+        ui->stringOut->setPlainText(result);
 }
 
 void MainWindow::on_actionSave_triggered()
