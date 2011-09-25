@@ -24,9 +24,10 @@ public:
     ~QAdvancedInputPanel();
 
 	QString text();
+	QString toPlainText();
 	void clear();
 	void paste();
-        void setText(QString text);
+	void setText(QString text);
 
 signals:
         void updateRequest();

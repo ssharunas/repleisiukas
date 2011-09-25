@@ -5,6 +5,7 @@
 #include "ui/jshighlighter.h"
 #include "presentation/fileloadsave.h"
 #include "presentation/queryexecution.h"
+#include "model/qtabdocument.h"
 
 namespace Ui {
     class MainWindow;
@@ -25,12 +26,15 @@ private:
 
     FileLoadSave* fileOperations;
 	QueryExecution *queryExecution;
+	QTabDocument * tabDocument;
 
 private:
 
 	void LoadQueryToGUI(QString query);
+	void setCurretTabDocument(QTabDocument * doc);
 
 private slots:
+	void tabChanged(int index);
     void on_pushButton_2_clicked();
     void UpdateLastUsedMenu();
     void on_actionAuto_update_triggered();
