@@ -47,9 +47,9 @@ QString QueryExecution::PreProxessQuey(QString query)
 		{
 			result += query.mid(lastIndex, from - lastIndex);
 
-			result += "'";
+			result += "('";
 			result += query.mid(from + 3, to - 3 - from).replace('\'', "\\'").replace('\r', "").replace('\n', "\\n' + \n'");
-			result += "'";
+			result += "')";
 			lastIndex = to + 3;
 
 			changed = true;
