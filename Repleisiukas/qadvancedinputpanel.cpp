@@ -45,6 +45,11 @@ void QAdvancedInputPanel::Dialogize()
 	on_actionDialogizuoti_triggered(true);
 }
 
+QString QAdvancedInputPanel::toPlainText()
+{
+	return ui->textEdit->toPlainText();
+}
+
 QString QAdvancedInputPanel::text(){
     QString result;
 
@@ -73,7 +78,7 @@ QString QAdvancedInputPanel::text(){
 }
 
 void QAdvancedInputPanel::setText(QString text){
-    ui->textEdit->setText(text);
+	ui->textEdit->setPlainText(text);
     RecreateControls();
 }
 

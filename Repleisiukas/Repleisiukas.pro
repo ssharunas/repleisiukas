@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui script
+QT       += core gui script scripttools
 
 TARGET = Repleisiukas
 TEMPLATE = app
@@ -15,13 +15,17 @@ SOURCES += main.cpp\
 	ui/jshighlighter.cpp \
     qadvancedinputpanel.cpp \
 	presentation/fileloadsave.cpp \
-    presentation/queryexecution.cpp
+    presentation/queryexecution.cpp \
+    model/qtabdocument.cpp \
+    qadvancedtabbar.cpp
 
 HEADERS  += mainwindow.h \
 	ui/jshighlighter.h \
     qadvancedinputpanel.h \
 	presentation/fileloadsave.h \
-    presentation/queryexecution.h
+    presentation/queryexecution.h \
+    model/qtabdocument.h \
+    qadvancedtabbar.h
 
 FORMS    += mainwindow.ui \
     qadvancedinputpanel.ui
@@ -31,6 +35,10 @@ OTHER_FILES += \
 
 RESOURCES += \
 	other/resources.qrc
+
+
+
+
 
 
 

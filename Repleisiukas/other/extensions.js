@@ -81,7 +81,7 @@ Custom help topics can be registered using function help().registerTopic('Topic'
 ");
 
 
-help().registerTopic("dialogizuoti", "Sugeneruojama forma, kurioje patogiau įvesti kintamuosiuos.",
+help().registerTopic("dialogizuoti", "Sugeneruojama forma, kurioje patogiau įvesti kintamuosius.",
 "Duomenų įvedimo laukelyje įrašykite dialogizavimo formatą ir iš kontekstinio meniu pasirinkite punktą „Dialogizuoti“.\
 \nPavyzdys, skripte galėsite naudoti kintamuosiuos variable ir variable1:\n\
 text variable=default;;\nnumber variable1=123;;\n\n\

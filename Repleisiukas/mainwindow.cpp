@@ -33,12 +33,42 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect(fileOperations, SIGNAL(UpdateLastUsed()), this, SLOT(UpdateLastUsedMenu()));
 	connect(ui->stringIn, SIGNAL(updateRequest()), this, SLOT(on_pushButton_Go_clicked()));
+
+	ui->tabs->createNewTab();
+	tabDocument = ui->tabs->getCurrentDocument();
+
+	connect(ui->tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
+	ui->tabs->setTrashButton(ui->trashButton);
 }
 
 MainWindow::~MainWindow()
 {
 	delete ui;
 	delete highlighter;
+}
+
+void MainWindow::tabChanged(int)
+{
+	setCurretTabDocument(ui->tabs->getCurrentDocument());
+}
+
+void MainWindow::setCurretTabDocument(QTabDocument * doc){
+	if(tabDocument != 0)
+	{
+		//tabDocument->setFileName();
+//		tabDocument->setName();
+		tabDocument->setInput(ui->stringIn->toPlainText());
+		tabDocument->setQuery(ui->query->toPlainText());
+		tabDocument->setOutput(ui->stringOut->toPlainText());
+	}
+
+	tabDocument = doc;
+	if(tabDocument != 0)
+	{
+		ui->stringIn->setText(tabDocument->input());
+		ui->query->setText(tabDocument->query());
+		ui->stringOut->setPlainText(tabDocument->output());
+	}
 }
 
 void MainWindow::UpdateLastUsedMenu()
@@ -122,16 +152,16 @@ void MainWindow::on_actionExecute_triggered()
 
 void MainWindow::on_pushButton_2_clicked()
 {
-	QString dir = QFileDialog::getExistingDirectory(this);
+//	QString dir = QFileDialog::getExistingDirectory(this);
 
-	if(!dir.isEmpty())
-	{
-		if(!(dir.endsWith('/') || dir.endsWith('\\')))
-			dir.append("/");
-		dir.append("*");
+//	if(!dir.isEmpty())
+//	{
+//		if(!(dir.endsWith('/') || dir.endsWith('\\')))
+//			dir.append("/");
+//		dir.append("*");
 
-		ui->inFiles->addItem(dir);
-	}
+//		ui->inFiles->addItem(dir);
+//	}
 }
 
 void MainWindow::on_actionZoom_In_triggered()

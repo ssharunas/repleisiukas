@@ -5,6 +5,7 @@
 #include <QSettings>
 #include <QApplication>
 #include <QDir>
+#include <QScriptEngineDebugger>
 
 QueryExecution::QueryExecution(QObject *parent) :
 	QObject(parent), _fileOperations(0)
@@ -108,6 +109,8 @@ QString QueryExecution::Execute(QString query, QString userInput)
 	qDebug() << fullQuery;
 
 	QScriptEngine engine;
+	QScriptEngineDebugger debuger;
+	debuger.attachTo(&engine);
 	QScriptValue value = engine.evaluate(fullQuery);
 
 	if(value.isError())
