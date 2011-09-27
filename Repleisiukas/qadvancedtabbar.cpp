@@ -73,7 +73,12 @@ void QAdvancedTabBar::createNewTab()
 	QTabDocument* doc = createDocument();
 	int index = addTab(doc->name());
 	setTabData(index, QVariant(doc->uid()));
-	setCurrentIndex(index);
+
+	if(currentIndex() != index){
+		setCurrentIndex(index);
+	}else{
+		currentChanged(index);
+	}
 }
 
 void QAdvancedTabBar::mouseDoubleClickEvent(QMouseEvent * evt){
@@ -145,6 +150,9 @@ void QAdvancedTabBar::closeTab(int index)
 			lastAction = action;
 		}
 	}
+
+	if(count() <= 0)
+		createNewTab();
 }
 
 void QAdvancedTabBar::restoreTab()
