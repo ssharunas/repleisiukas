@@ -39,12 +39,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect(ui->tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 	ui->tabs->setTrashButton(ui->trashButton);
+
+	fileOperations->getSavedSession();
 }
 
 MainWindow::~MainWindow()
 {
-	delete ui;
 	delete highlighter;
+	delete ui;
 }
 
 void MainWindow::tabChanged(int)
@@ -172,4 +174,22 @@ void MainWindow::on_actionZoom_In_triggered()
 void MainWindow::on_actionZoom_Out_triggered()
 {
 	ui->query->zoomOut();
+}
+
+void MainWindow::onClosing()
+{
+	//TODO: save current document
+	QList<QTabDocument*> documents;
+	for(int i = 0; i < ui->tabs->count(); i++){
+		documents.append(ui->tabs->getTabDocument(i));
+	}
+
+	fileOperations->saveCurrentSession(documents);
+}
+
+void MainWindow::closeEvent(QCloseEvent *ev)
+{
+	onClosing();
+
+	QMainWindow::closeEvent(ev);
 }

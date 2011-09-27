@@ -5,6 +5,10 @@ QTabDocument::QTabDocument(QObject *parent) :
 {
 }
 
+QTabDocument::~QTabDocument(){
+	qDebug("deteted...");
+}
+
 QString QTabDocument::uid(){
 	if(_uid.isNull())
 		_uid = QUuid::createUuid();

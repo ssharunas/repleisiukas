@@ -20,9 +20,6 @@ QueryExecution::QueryExecution(FileLoadSave* fileOperations, QObject *parent) :
 }
 
 QueryExecution::~QueryExecution(){
-	if(_fileOperations != 0)
-		delete _fileOperations;
-
 	_fileOperations = 0;
 }
 

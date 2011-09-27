@@ -15,6 +15,7 @@ class QAdvancedTabBar : public QTabBar
 		explicit QAdvancedTabBar(QWidget *parent = 0);
 
 		QTabDocument* getCurrentDocument();
+		QTabDocument* getTabDocument(int tab);
 		void setTrashButton(QPushButton* button);
 	signals:
 

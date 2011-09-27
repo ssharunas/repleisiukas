@@ -31,6 +31,20 @@ QTabDocument* QAdvancedTabBar::getCurrentDocument()
 	return doc;
 }
 
+QTabDocument* QAdvancedTabBar::getTabDocument(int tab)
+{
+	QTabDocument* doc = 0;
+
+	if(tab >= 0 && tab < count()){
+		QString currentDocumentUID = tabData(tab).toString();
+
+		if(documents.contains(currentDocumentUID))
+			doc = documents[currentDocumentUID];
+	}
+
+	return doc;
+}
+
 QTabDocument* QAdvancedTabBar::createDocument()
 {
 	QTabDocument* doc = new QTabDocument(this);

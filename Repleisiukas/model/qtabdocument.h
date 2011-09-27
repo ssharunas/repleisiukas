@@ -9,6 +9,7 @@ class QTabDocument : public QObject
 		Q_OBJECT
 	public:
 		explicit QTabDocument(QObject *parent = 0);
+		~QTabDocument();
 
 		QString uid();
 		QString fileName();

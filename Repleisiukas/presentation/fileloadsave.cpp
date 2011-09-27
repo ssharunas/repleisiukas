@@ -224,3 +224,45 @@ QString FileLoadSave::GetAutoLoadText(QString script){
 
 	return result;
 }
+
+void FileLoadSave::saveCurrentSession(QList<QTabDocument *> &sessionDocuments)
+{
+	QList<QList<QString> > data;
+
+	foreach (QTabDocument* doc, sessionDocuments)
+	{
+		QList<QString> item;
+		item << doc->input()
+			<< doc->query()
+			<< doc->output()
+			<< doc->name()
+			<< doc->fileName();
+
+		data.append(item);
+	}
+
+	QFile file("file.dat");
+	file.open(QIODevice::WriteOnly);
+	QDataStream out(&file);
+	out << (qint32)1; //version
+	out << data;
+}
+
+QList<QTabDocument *> FileLoadSave::getSavedSession()
+{
+	QList<QList<QString> > data;
+	qint32 version;
+
+	QFile file("file.dat");
+	file.open(QIODevice::ReadOnly);
+	QDataStream in(&file);
+	in >> version;
+
+	if(version == 1){
+		in >> data;
+	}
+
+	qDebug() << version << data;
+
+	return QList<QTabDocument *>();
+}

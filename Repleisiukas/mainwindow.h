@@ -33,7 +33,11 @@ private:
 	void LoadQueryToGUI(QString query);
 	void setCurretTabDocument(QTabDocument * doc);
 
+protected:
+	virtual void closeEvent(QCloseEvent *);
+
 private slots:
+	void onClosing();
 	void tabChanged(int index);
     void on_pushButton_2_clicked();
     void UpdateLastUsedMenu();

@@ -5,6 +5,7 @@
 #include <QString>
 #include <QTextStream>
 #include <QFile>
+#include "model/qtabdocument.h"
 
 class FileLoadSave : public QObject
 {
@@ -27,6 +28,9 @@ class FileLoadSave : public QObject
 
 		QString LoadResource(QString path);
 		QString GetAutoLoadText(QString script);
+
+		void saveCurrentSession(QList<QTabDocument*> &sessionDocuments);
+		QList<QTabDocument *> getSavedSession();
 
 	private:
 		unsigned int DEFAULT_MENU_ITEMS_COUNT;
