@@ -109,8 +109,15 @@ QString QueryExecution::Execute(QString query, QString userInput)
 	qDebug() << fullQuery;
 
 	QScriptEngine engine;
-	QScriptEngineDebugger debuger;
-	debuger.attachTo(&engine);
+
+	QSettings settings;
+	bool debugger = settings.value("/settings/debugger").toBool();
+	if(debugger)
+	{
+		QScriptEngineDebugger *debuger = new QScriptEngineDebugger(&engine);
+		debuger->attachTo(&engine);
+	}
+
 	QScriptValue value = engine.evaluate(fullQuery);
 
 	if(value.isError())

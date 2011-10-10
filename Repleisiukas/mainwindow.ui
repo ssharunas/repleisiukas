@@ -109,7 +109,7 @@
      <x>0</x>
      <y>0</y>
      <width>677</width>
-     <height>24</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuQueris">
@@ -131,6 +131,7 @@
      <string>Settings</string>
     </property>
     <addaction name="actionAuto_update"/>
+    <addaction name="actionDebugger"/>
     <addaction name="actionZoom_In"/>
     <addaction name="actionZoom_Out"/>
    </widget>
@@ -172,6 +173,14 @@
   <action name="actionZoom_Out">
    <property name="text">
     <string>Zoom Out</string>
+   </property>
+  </action>
+  <action name="actionDebugger">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Debugger</string>
    </property>
   </action>
  </widget>
