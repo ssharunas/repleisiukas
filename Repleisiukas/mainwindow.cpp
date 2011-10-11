@@ -28,6 +28,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	bool autoUpdate = settings.value("/settings/autoUpdate").toBool();
 	ui->actionAuto_update->setChecked(autoUpdate);
 
+	bool debugger = settings.value("/settings/debugger").toBool();
+	ui->actionDebugger->setChecked(debugger);
+
+
         QShortcut* shortcut = new QShortcut(QKeySequence(tr("Ctrl+Return")), ui->query);
         connect(shortcut, SIGNAL(activated()), ui->actionExecute, SLOT(trigger()));
 
@@ -192,4 +196,10 @@ void MainWindow::closeEvent(QCloseEvent *ev)
 	onClosing();
 
 	QMainWindow::closeEvent(ev);
+}
+
+	void MainWindow::on_actionDebugger_triggered()
+{
+	QSettings settings;
+	settings.setValue("/settings/debugger", QVariant(ui->actionDebugger->isChecked()));
 }

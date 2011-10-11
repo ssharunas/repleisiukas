@@ -45,9 +45,9 @@ QString QueryExecution::PreProxessQuey(QString query)
 		{
 			result += query.mid(lastIndex, from - lastIndex);
 
-			result += "'";
+			result += "('";
 			result += query.mid(from + 3, to - 3 - from).replace('\'', "\\'").replace('\r', "").replace('\n', "\\n' + \n'");
-			result += "'";
+			result += "')";
 			lastIndex = to + 3;
 
 			changed = true;
@@ -98,16 +98,20 @@ QString QueryExecution::Execute(QString query, QString userInput)
 	QString extensions = LoadExtensions();
 	query = PreProxessQuey(query);
 
-	QString fullQuery = resources + QString(" ; %3 ;\n %1 ; \n%2")
-			.arg(userInput)
-			.arg(query)
-			.arg(extensions);
+	qDebug() << extensions;
 
-	qDebug() << fullQuery;
+	QString fullQuery = resources + " ;\n" + extensions + " ;\n " + userInput + " ;\n" + query;
 
 	QScriptEngine engine;
-	QScriptEngineDebugger debuger;
-	debuger.attachTo(&engine);
+
+	QSettings settings;
+	bool debugger = settings.value("/settings/debugger").toBool();
+	if(debugger)
+	{
+		QScriptEngineDebugger *debuger = new QScriptEngineDebugger(&engine);
+		debuger->attachTo(&engine);
+	}
+
 	QScriptValue value = engine.evaluate(fullQuery);
 
 	if(value.isError())

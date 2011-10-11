@@ -50,6 +50,7 @@ private slots:
     void on_actionExecute_triggered();
 	void on_actionZoom_In_triggered();
 	void on_actionZoom_Out_triggered();
+	void on_actionDebugger_triggered();
 };
 
 #endif // MAINWINDOW_H
