@@ -101,12 +101,9 @@ QString QueryExecution::Execute(QString query, QString userInput)
 	QString extensions = LoadExtensions();
 	query = PreProxessQuey(query);
 
-	QString fullQuery = resources + QString(" ; %3 ;\n %1 ; \n%2")
-			.arg(userInput)
-			.arg(query)
-			.arg(extensions);
+	qDebug() << extensions;
 
-	qDebug() << fullQuery;
+	QString fullQuery = resources + " ;\n" + extensions + " ;\n " + userInput + " ;\n" + query;
 
 	QScriptEngine engine;
 
