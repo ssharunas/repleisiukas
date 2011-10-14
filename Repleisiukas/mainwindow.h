@@ -32,6 +32,7 @@ private:
 
 	void LoadQueryToGUI(QString query);
 	void setCurretTabDocument(QTabDocument * doc);
+	void LoadSession();
 
 protected:
 	virtual void closeEvent(QCloseEvent *);

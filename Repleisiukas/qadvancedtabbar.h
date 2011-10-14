@@ -17,6 +17,7 @@ class QAdvancedTabBar : public QTabBar
 		QTabDocument* getCurrentDocument();
 		QTabDocument* getTabDocument(int tab);
 		void setTrashButton(QPushButton* button);
+		void loadDocuments(QList<QTabDocument*> documents);
 	signals:
 
 	public slots:

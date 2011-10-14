@@ -31,9 +31,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	bool debugger = settings.value("/settings/debugger").toBool();
 	ui->actionDebugger->setChecked(debugger);
 
-
-        QShortcut* shortcut = new QShortcut(QKeySequence(tr("Ctrl+Return")), ui->query);
-        connect(shortcut, SIGNAL(activated()), ui->actionExecute, SLOT(trigger()));
+	QShortcut* shortcut = new QShortcut(QKeySequence(tr("Ctrl+Return")), ui->query);
+	connect(shortcut, SIGNAL(activated()), ui->actionExecute, SLOT(trigger()));
 
 	connect(fileOperations, SIGNAL(UpdateLastUsed()), this, SLOT(UpdateLastUsedMenu()));
 	connect(ui->stringIn, SIGNAL(updateRequest()), this, SLOT(on_pushButton_Go_clicked()));
@@ -44,13 +43,21 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 	ui->tabs->setTrashButton(ui->trashButton);
 
-	fileOperations->getSavedSession();
+	LoadSession();
 }
 
 MainWindow::~MainWindow()
 {
 	delete highlighter;
 	delete ui;
+}
+
+
+void MainWindow::LoadSession()
+{
+	QList<QTabDocument*> documents = fileOperations->getSavedSession();
+
+	ui->tabs->loadDocuments(documents);
 }
 
 void MainWindow::tabChanged(int)
@@ -182,8 +189,10 @@ void MainWindow::on_actionZoom_Out_triggered()
 
 void MainWindow::onClosing()
 {
-	//TODO: save current document
+	setCurretTabDocument(tabDocument);
+
 	QList<QTabDocument*> documents;
+
 	for(int i = 0; i < ui->tabs->count(); i++){
 		documents.append(ui->tabs->getTabDocument(i));
 	}

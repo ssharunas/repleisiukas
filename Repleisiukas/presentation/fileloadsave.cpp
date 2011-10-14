@@ -231,38 +231,73 @@ void FileLoadSave::saveCurrentSession(QList<QTabDocument *> &sessionDocuments)
 
 	foreach (QTabDocument* doc, sessionDocuments)
 	{
-		QList<QString> item;
-		item << doc->input()
-			<< doc->query()
-			<< doc->output()
-			<< doc->name()
-			<< doc->fileName();
+		if(doc != 0){
+			QList<QString> item;
+			item << doc->input()
+				 << doc->query()
+				 << doc->output()
+				 << doc->name()
+				 << doc->fileName();
 
-		data.append(item);
+			data.append(item);
+		}
+		else
+		{
+			qDebug("NULL document while saving...");
+		}
 	}
 
-	QFile file("file.dat");
-	file.open(QIODevice::WriteOnly);
-	QDataStream out(&file);
-	out << (qint32)1; //version
-	out << data;
+	QSettings settings;
+	QString fileName = settings.value("/files/sessionfile", QVariant("session.dat")).toString();
+
+	QFile file(fileName);
+	if(file.open(QIODevice::WriteOnly))
+	{
+		QDataStream out(&file);
+
+		out << (qint32)1; //version
+		out << data;
+	}else{
+		qDebug() << "Failed to write to file: " << fileName;
+	}
 }
 
 QList<QTabDocument *> FileLoadSave::getSavedSession()
 {
+	QList<QTabDocument *> result;
 	QList<QList<QString> > data;
-	qint32 version;
+	qint32 version = -1;
 
-	QFile file("file.dat");
-	file.open(QIODevice::ReadOnly);
-	QDataStream in(&file);
-	in >> version;
+	QSettings settings;
+	QString fileName = settings.value("/files/sessionfile", QVariant("session.dat")).toString();
 
-	if(version == 1){
-		in >> data;
+	QFile file(fileName);
+	if(file.open(QIODevice::ReadOnly))
+	{
+		QDataStream in(&file);
+		in >> version;
+
+		if(version == 1){
+			in >> data;
+
+			foreach (QList<QString> item, data)
+			{
+				QTabDocument *doc = new QTabDocument();
+
+				doc->setInput(item[0]);
+				doc->setQuery(item[1]);
+				doc->setOutput(item[2]);
+				doc->setName(item[3]);
+				doc->setFileName(item[4]);
+
+				result.append(doc);
+			}
+		}
+
+		qDebug() << version << data;
+	}else{
+		qDebug() << "Failed to open session file: " << fileName;
 	}
 
-	qDebug() << version << data;
-
-	return QList<QTabDocument *>();
+	return result;
 }

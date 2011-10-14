@@ -40,6 +40,8 @@ QTabDocument* QAdvancedTabBar::getTabDocument(int tab)
 
 		if(documents.contains(currentDocumentUID))
 			doc = documents[currentDocumentUID];
+		else
+			qDebug() << "Could not find document with id " << currentDocumentUID;
 	}
 
 	return doc;
@@ -59,8 +61,10 @@ void QAdvancedTabBar::openDocument(QTabDocument* document)
 {
 	if(document != 0)
 	{
-		if(documents.contains(document->uid()))
+		if(!documents.contains(document->uid()))
+		{
 			documents[document->uid()] = document;
+		}
 
 		int index = -1;
 		for(int i = 0; i < count(); i++)
@@ -192,5 +196,23 @@ void QAdvancedTabBar::restoreTab()
 		lastAction = trashMenu->actions().first();
 
 		action->deleteLater();
+	}
+}
+
+void QAdvancedTabBar::loadDocuments(QList<QTabDocument*> documents)
+{
+	if(documents.count() > 0)
+	{
+		this->documents.clear();
+
+		while(count())
+			removeTab(0);
+
+		for(int i = 0; i < documents.count(); i++)
+		{
+			openDocument(documents[i]);
+		}
+
+		currentChanged(currentIndex());
 	}
 }
