@@ -100,7 +100,7 @@ QString QueryExecution::Execute(QString query, QString userInput)
 
 	qDebug() << extensions;
 
-	QString fullQuery = resources + " ;\n" + extensions + " ;\n " + userInput + " ;\n" + query;
+	QString fullQuery = resources + " ;\n" + extensions + " ;\n " + userInput + " ; \"\" ; \n" + query;
 
 	QScriptEngine engine;
 
