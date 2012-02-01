@@ -17,7 +17,8 @@ SOURCES += main.cpp\
 	presentation/fileloadsave.cpp \
     presentation/queryexecution.cpp \
     model/qtabdocument.cpp \
-    qadvancedtabbar.cpp
+    qadvancedtabbar.cpp \
+    model/qfilesystemaccess.cpp
 
 HEADERS  += mainwindow.h \
 	ui/jshighlighter.h \
@@ -25,7 +26,8 @@ HEADERS  += mainwindow.h \
 	presentation/fileloadsave.h \
     presentation/queryexecution.h \
     model/qtabdocument.h \
-    qadvancedtabbar.h
+    qadvancedtabbar.h \
+    model/qfilesystemaccess.h
 
 FORMS    += mainwindow.ui \
     qadvancedinputpanel.ui
@@ -35,6 +37,8 @@ OTHER_FILES += \
 
 RESOURCES += \
 	other/resources.qrc
+
+
 
 
 

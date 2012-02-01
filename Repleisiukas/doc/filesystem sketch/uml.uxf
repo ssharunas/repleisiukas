@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="11.3">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1420</x>
+      <y>320</y>
+      <w>540</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>_FileSystemFactory_
+--
+//scheme to be used in case none is specified.
++ &lt;&lt;property&gt;&gt; DefaultScheme = "file"
+--
++RegisterFilesystemHandler(string scheme, IFilesystemHandler* handler)
++GetHandler(scheme : string) : IFileSystemHandler</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1420</x>
+      <y>500</y>
+      <w>440</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>IFileSystemHandler
+--
+--
++ Open(path : QString, mode : QString) : IFileSystemObject
+--
+ 
+[optional]
++ Exists(path : QString) : bool</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Note</type>
+    <coordinates>
+      <x>1510</x>
+      <y>170</y>
+      <w>230</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>Filesystem:
+file://d:/file.txt
+http://google.lt
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>700</x>
+      <y>460</y>
+      <w>330</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>IFileSystemObject
+--
++ Name : string
++ Permissions : Permission
++ IsClosed
+--
++ ReadAll() : string
++ ReadLine(): string | FileSystemObject
++ Write(data : string) : int
++ Seek(pos: int, whence : Whence) : bool
++ Flush()
++ Close()
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>650</x>
+      <y>390</y>
+      <w>680</w>
+      <h>540</h>
+    </coordinates>
+    <panel_attributes>JS
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1130</x>
+      <y>450</y>
+      <w>120</w>
+      <h>220</h>
+    </coordinates>
+    <panel_attributes>Permission
+--
++ur
++uw
++ue
++gr
++gw
++ge
++or
++ow
++uid
++gid
++user</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>700</x>
+      <y>690</y>
+      <w>410</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>FileSystemAccess
+--
+- factory : FileSystemFactory
+--
++ Open(path : string, mode : string) : IFileSystemObject
+--
+ 
+/[optional, maybe implement later]/
++ Exists(path) : bool</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1130</x>
+      <y>680</y>
+      <w>120</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enum&gt;&gt;
+Whence
+--
+FileStart
+CurPos
+FileEnd
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Note</type>
+    <coordinates>
+      <x>1130</x>
+      <y>810</y>
+      <w>100</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>Mode:
+r
+w
+a</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1080</x>
+      <y>750</y>
+      <w>70</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>30;30;50;80</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1580</x>
+      <y>220</y>
+      <w>150</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>30;30;130;100</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Note</type>
+    <coordinates>
+      <x>650</x>
+      <y>0</y>
+      <w>610</w>
+      <h>230</h>
+    </coordinates>
+    <panel_attributes>1. Handlers are registered ( filesystem, http, etc.)
+2. is script widow: var myFile = FileSystemAccess.open("c:/file.txt")
+3. FileSystemAccess
+{
+    scheme = getScheme()
+    handler = FileSystemFactory.getHandler(scheme)
+    file = handler.open(path, mode)
+    return file;
+}
+4. actions with file e.g. myFile.ReadAll()
+5. optional myFile.Close()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>420</x>
+      <y>880</y>
+      <w>180</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>HTTPDocumentObject
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>490</x>
+      <y>570</y>
+      <w>230</w>
+      <h>330</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>210;30;30;30;30;310</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>210</x>
+      <y>880</y>
+      <w>180</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>LocalFileObject
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>270</x>
+      <y>570</y>
+      <w>450</w>
+      <h>330</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>430;30;30;30;30;310</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1440</x>
+      <y>680</y>
+      <w>210</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>LocalFileSystemHandler
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1520</x>
+      <y>580</y>
+      <w>160</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>140;30;140;70;30;70;30;100</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>880</y>
+      <w>180</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>LocalFolderObject
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>60</x>
+      <y>570</y>
+      <w>660</w>
+      <h>330</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>640;30;30;30;30;310</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1680</x>
+      <y>680</y>
+      <w>210</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>HTTPFileSystemHandler
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1630</x>
+      <y>580</y>
+      <w>160</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>30;30;30;70;140;70;140;100</additional_attributes>
+  </element>
+</diagram>
