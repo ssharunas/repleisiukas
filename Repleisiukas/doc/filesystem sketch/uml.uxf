@@ -47,7 +47,7 @@
     <panel_attributes>Filesystem:
 file://d:/file.txt
 http://google.lt
-</panel_attributes>
+repleisiukas://localhost/tabs/1/query</panel_attributes>
     <additional_attributes/>
   </element>
   <element>

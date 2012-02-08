@@ -18,7 +18,10 @@ SOURCES += main.cpp\
     presentation/queryexecution.cpp \
     model/qtabdocument.cpp \
     qadvancedtabbar.cpp \
-    model/qfilesystemaccess.cpp
+    model/qfilesystemaccess.cpp \
+    model/filesystem/filesystemfactory.cpp \
+    model/filesystem/permission.cpp \
+    model/filesystem/local/localfolderobject.cpp
 
 HEADERS  += mainwindow.h \
 	ui/jshighlighter.h \
@@ -27,7 +30,13 @@ HEADERS  += mainwindow.h \
     presentation/queryexecution.h \
     model/qtabdocument.h \
     qadvancedtabbar.h \
-    model/qfilesystemaccess.h
+    model/qfilesystemaccess.h \
+    model/filesystem/filesystemfactory.h \
+    model/filesystem/ifilesystemhandler.h \
+    model/filesystem/ifilesystemobject.h \
+    model/filesystem/whence.h \
+    model/filesystem/permission.h \
+    model/filesystem/local/localfolderobject.h
 
 FORMS    += mainwindow.ui \
     qadvancedinputpanel.ui
