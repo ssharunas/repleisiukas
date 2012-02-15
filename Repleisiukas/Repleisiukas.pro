@@ -21,7 +21,12 @@ SOURCES += main.cpp\
     model/qfilesystemaccess.cpp \
     model/filesystem/filesystemfactory.cpp \
     model/filesystem/permission.cpp \
-    model/filesystem/local/localfolderobject.cpp
+    model/filesystem/local/localfolderobject.cpp \
+    model/test/testobject.cpp \
+    model/test/testprototype.cpp \
+    model/filesystem/local/localfolderobjectprototype.cpp \
+	model/filesystem/filesystemobjectprototype.cpp \
+    model/filesystem/filesystemobject.cpp
 
 HEADERS  += mainwindow.h \
 	ui/jshighlighter.h \
@@ -36,7 +41,12 @@ HEADERS  += mainwindow.h \
     model/filesystem/ifilesystemobject.h \
     model/filesystem/whence.h \
     model/filesystem/permission.h \
-    model/filesystem/local/localfolderobject.h
+    model/filesystem/local/localfolderobject.h \
+    model/test/testobject.h \
+    model/test/testprototype.h \
+    model/filesystem/local/localfolderobjectprototype.h \
+	model/filesystem/filesystemobjectprototype.h \
+    model/filesystem/filesystemobject.h
 
 FORMS    += mainwindow.ui \
     qadvancedinputpanel.ui

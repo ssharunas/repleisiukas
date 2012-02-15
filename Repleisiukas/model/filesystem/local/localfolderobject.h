@@ -1,11 +1,14 @@
 #ifndef LOCALFOLDEROBJECT_H
 #define LOCALFOLDEROBJECT_H
 
-#include <QScriptEngine>
+#include "../filesystemobject.h"
 
-class LocalFolderObject : public QObject, public QScriptClass
+#include <QScriptEngine>
+#include <QtScript/QScriptClass>
+
+class LocalFolderObject : public FileSystemObject
 {
-//		Q_OBJECT
+		Q_OBJECT
 	public:
 		LocalFolderObject(QScriptEngine *engine);
 		~LocalFolderObject();

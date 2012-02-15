@@ -6,6 +6,7 @@
 #include <QApplication>
 #include <QDir>
 #include <QScriptEngineDebugger>
+#include "../model/test/testobject.h"
 
 QueryExecution::QueryExecution(QObject *parent) :
 	QObject(parent), _fileOperations(0)
@@ -103,6 +104,8 @@ QString QueryExecution::Execute(QString query, QString userInput)
 	QString fullQuery = resources + " ;\n" + extensions + " ;\n " + userInput + " ;\n" + query;
 
 	QScriptEngine engine;
+	TestObject* test = new TestObject(&engine);
+	engine.globalObject().setProperty("XXX", test->constructor());
 
 	QSettings settings;
 	bool debugger = settings.value("/settings/debugger").toBool();
@@ -128,6 +131,9 @@ QString QueryExecution::Execute(QString query, QString userInput)
 	{
 		result = value.toString();
 	}
+
+	delete test;
+	test = 0;
 
 	return result;
 }
