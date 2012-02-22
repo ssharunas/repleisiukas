@@ -27,6 +27,7 @@ private:
     FileLoadSave* fileOperations;
 	QueryExecution *queryExecution;
 	QTabDocument * tabDocument;
+	bool contructionInProgress;
 
 private:
 

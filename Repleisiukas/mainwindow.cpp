@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow)
 {
+	contructionInProgress = true;
 	QCoreApplication::setOrganizationName("SoftDent");
 	QCoreApplication::setOrganizationDomain("softdent.lt");
 	QCoreApplication::setApplicationName("Repleisiukas");
@@ -44,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->tabs->setTrashButton(ui->trashButton);
 
 	LoadSession();
+	contructionInProgress = false;
 }
 
 MainWindow::~MainWindow()
@@ -128,9 +130,13 @@ void MainWindow::LoadQueryToGUI(QString query)
 
 void MainWindow::on_pushButton_Go_clicked()
 {
-	fileOperations->SetLastQuery(ui->query->toPlainText());
-        QString result = queryExecution->Execute(ui->query->toPlainText(), ui->stringIn->text());
-        ui->stringOut->setPlainText(result);
+	qDebug() << contructionInProgress;
+	if(!contructionInProgress)
+	{
+		fileOperations->SetLastQuery(ui->query->toPlainText());
+			QString result = queryExecution->Execute(ui->query->toPlainText(), ui->stringIn->text());
+			ui->stringOut->setPlainText(result);
+	}
 }
 
 void MainWindow::on_actionSave_triggered()
