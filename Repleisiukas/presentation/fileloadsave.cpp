@@ -70,7 +70,7 @@ void FileLoadSave::SetLastQuery(QString query)
 	}
 }
 
-QString FileLoadSave::LoadFromFile()
+QString FileLoadSave::GetLoadFromFileFilename()
 {
 	QSettings settings;
 	QString path =  settings.value("/files/lastSaveDir").toString();
@@ -81,8 +81,8 @@ QString FileLoadSave::LoadFromFile()
 	{
 		path = fileName.section('/', 0, -2);
 		settings.setValue("/files/lastSaveDir", QVariant(path));
-		qDebug() << "saved" << path << fileName;
-		return LoadFromFile(fileName);
+
+		return fileName;
 	}
 
 	return QString();
@@ -163,22 +163,25 @@ QStringList FileLoadSave::GetLastUsedMenuEntries()
 }
 
 
-void FileLoadSave::SaveToFile(QString query)
+QString FileLoadSave::SaveToFile(QString query)
 {
 	QSettings settings;
 	QString path =  settings.value("/files/lasLoadDir").toString();
 	QString fileName = QFileDialog::getSaveFileName(parent(), QString(), path);
+	QString savedTo;
 
 	if(!fileName.isEmpty())
 	{
 		path = fileName.section('/', 0, -2);
 		settings.setValue("/files/lasLoadDir", QVariant(path));
 
-		SaveToFile(fileName, query);
+		savedTo = SaveToFile(fileName, query);
 	}
+
+	return savedTo;
 }
 
-void FileLoadSave::SaveToFile(QString fileName, QString query)
+QString FileLoadSave::SaveToFile(QString fileName, QString query)
 {
 	if(!fileName.isEmpty())
 	{
@@ -195,6 +198,8 @@ void FileLoadSave::SaveToFile(QString fileName, QString query)
 		stream << query;
 		UpdateLastUsedOrder(fileName);
 	}
+
+	return fileName;
 }
 
 QString FileLoadSave::LoadResource(QString path){

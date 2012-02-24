@@ -51,6 +51,7 @@ QTabDocument* QAdvancedTabBar::createDocument()
 {
 	QTabDocument* doc = new QTabDocument(this);
 	doc->setName(QString("New %1").arg(tab_document_count++));
+	connect(doc, SIGNAL(nameChanged()), this, SLOT(updateTab()));
 
 	documents[doc->uid()] = doc;
 
@@ -64,6 +65,7 @@ void QAdvancedTabBar::openDocument(QTabDocument* document)
 		if(!documents.contains(document->uid()))
 		{
 			documents[document->uid()] = document;
+			connect(document, SIGNAL(nameChanged()), this, SLOT(updateTab()));
 		}
 
 		int index = -1;
@@ -196,6 +198,28 @@ void QAdvancedTabBar::restoreTab()
 		lastAction = trashMenu->actions().first();
 
 		action->deleteLater();
+	}
+}
+
+void QAdvancedTabBar::updateTab()
+{
+	QTabDocument* doc =  qobject_cast<QTabDocument*>(sender());
+	if(doc != 0)
+	{
+		int index = -1;
+		for(int i = 0; i < count(); i++)
+		{
+			if(tabData(i) == doc->uid())
+			{
+				index = i;
+				break;
+			}
+		}
+
+		if(index != -1)
+		{
+			setTabText(index, doc->name());
+		}
 	}
 }
 

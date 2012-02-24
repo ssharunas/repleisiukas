@@ -27,6 +27,12 @@ class QTabDocument : public QObject
 		void setQuery(QString);
 		void setOutput(QString);
 //		void setIndex(int);
+
+		void nameFromFileName();
+
+	signals:
+		void nameChanged();
+
 	private:
 		int _index;
 		QUuid _uid;

@@ -105,9 +105,16 @@ void MainWindow::on_openFile_clicked()
 {
 	QAction *senderAction = dynamic_cast<QAction*>(sender());
 
-	if(senderAction){
+	if(senderAction)
+	{
 		QString file = senderAction->data().toString();
 		qDebug() << "trying to open file" << file;
+
+		if(tabDocument != 0)
+		{
+			tabDocument->setFileName(file);
+			tabDocument->nameFromFileName();
+		}
 
 		LoadQueryToGUI(fileOperations->LoadFromFile(file));
 	}
@@ -141,12 +148,44 @@ void MainWindow::on_pushButton_Go_clicked()
 
 void MainWindow::on_actionSave_triggered()
 {
-	fileOperations->SaveToFile(ui->query->toPlainText());
+	if(tabDocument != 0)
+	{
+		if(!tabDocument->fileName().isEmpty())
+		{
+			fileOperations->SaveToFile(tabDocument->fileName(), ui->query->toPlainText());
+		}else
+		{
+			on_actionSave_As_triggered();
+		}
+	}
+}
+
+void MainWindow::on_actionSave_As_triggered()
+{
+	QString fileName = fileOperations->SaveToFile(ui->query->toPlainText());
+	if(!fileName.isEmpty())
+	{
+		if(tabDocument != 0)
+		{
+			tabDocument->setFileName(fileName);
+			tabDocument->nameFromFileName();
+		}
+	}
 }
 
 void MainWindow::on_actionLoad_triggered()
 {
-	LoadQueryToGUI(fileOperations->LoadFromFile());
+	QString fileName = fileOperations->GetLoadFromFileFilename();
+	if(!fileName.isEmpty())
+	{
+		if(tabDocument != 0)
+		{
+			tabDocument->setFileName(fileName);
+			tabDocument->nameFromFileName();
+		}
+
+		LoadQueryToGUI(fileOperations->LoadFromFile(fileName));
+	}
 }
 
 void MainWindow::on_pushButton_clicked()

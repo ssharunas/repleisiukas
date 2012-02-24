@@ -18,12 +18,12 @@ class FileLoadSave : public QObject
 		void SetLastQuery(QString query);
 
 		QString LoadFromFile(QString filename);
-		QString LoadFromFile();
+		QString GetLoadFromFileFilename();
 		unsigned int MenuItemCount();
 		void UpdateLastUsedOrder(QString newName);
 		QStringList GetLastUsedMenuEntries();
-		void SaveToFile(QString query);
-		void SaveToFile(QString fileName, QString query);
+		QString SaveToFile(QString query);
+		QString SaveToFile(QString fileName, QString query);
 		QWidget* parent() const;
 
 		QString LoadResource(QString path);

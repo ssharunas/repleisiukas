@@ -6,7 +6,7 @@ QTabDocument::QTabDocument(QObject *parent) :
 }
 
 QTabDocument::~QTabDocument(){
-	qDebug("deteted...");
+	qDebug("Tab was destroyed...");
 }
 
 QString QTabDocument::uid(){
@@ -46,6 +46,8 @@ void QTabDocument::setFileName(QString filename){
 
 void QTabDocument::setName(QString name){
 	_name = name;
+
+	emit nameChanged();
 }
 
 void QTabDocument::setInput(QString input){
@@ -58,6 +60,23 @@ void QTabDocument::setQuery(QString query){
 
 void QTabDocument::setOutput(QString output){
 	_output = output;
+}
+
+void QTabDocument::nameFromFileName()
+{
+	QString name = QString();
+
+	if(!fileName().isEmpty())
+	{
+		int slash = fileName().lastIndexOf('/');
+
+		if((slash != -1) & (slash + 1 < fileName().length()))
+		{
+			name=  fileName().mid(slash + 1);
+		}
+	}
+
+	setName(name);
 }
 
 //void QTabDocument::setIndex(int index){
