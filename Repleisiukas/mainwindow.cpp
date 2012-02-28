@@ -37,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect(fileOperations, SIGNAL(UpdateLastUsed()), this, SLOT(UpdateLastUsedMenu()));
 	connect(ui->stringIn, SIGNAL(updateRequest()), this, SLOT(on_pushButton_Go_clicked()));
+	connect(ui->query, SIGNAL(textChanged()), this, SLOT(onQueryChanged()));
 
 	ui->tabs->createNewTab();
 	tabDocument = ui->tabs->getCurrentDocument();
@@ -109,14 +110,14 @@ void MainWindow::on_openFile_clicked()
 	{
 		QString file = senderAction->data().toString();
 		qDebug() << "trying to open file" << file;
+		LoadQueryToGUI(fileOperations->LoadFromFile(file));
 
 		if(tabDocument != 0)
 		{
 			tabDocument->setFileName(file);
-			tabDocument->nameFromFileName();
+			tabDocument->setQuery(ui->query->toPlainText());
+			tabDocument->setIsModified(false);
 		}
-
-		LoadQueryToGUI(fileOperations->LoadFromFile(file));
 	}
 }
 
@@ -153,6 +154,8 @@ void MainWindow::on_actionSave_triggered()
 		if(!tabDocument->fileName().isEmpty())
 		{
 			fileOperations->SaveToFile(tabDocument->fileName(), ui->query->toPlainText());
+			tabDocument->setQuery(ui->query->toPlainText());
+			tabDocument->setIsModified(false);
 		}else
 		{
 			on_actionSave_As_triggered();
@@ -168,7 +171,8 @@ void MainWindow::on_actionSave_As_triggered()
 		if(tabDocument != 0)
 		{
 			tabDocument->setFileName(fileName);
-			tabDocument->nameFromFileName();
+			tabDocument->setQuery(ui->query->toPlainText());
+			tabDocument->setIsModified(false);
 		}
 	}
 }
@@ -181,7 +185,7 @@ void MainWindow::on_actionLoad_triggered()
 		if(tabDocument != 0)
 		{
 			tabDocument->setFileName(fileName);
-			tabDocument->nameFromFileName();
+			tabDocument->setIsModified(false);
 		}
 
 		LoadQueryToGUI(fileOperations->LoadFromFile(fileName));
@@ -243,6 +247,14 @@ void MainWindow::onClosing()
 	}
 
 	fileOperations->saveCurrentSession(documents);
+}
+
+void MainWindow::onQueryChanged()
+{
+	if(!contructionInProgress && tabDocument != 0)
+	{
+		tabDocument->setIsModified(ui->query->toPlainText() != tabDocument->query());
+	}
 }
 
 void MainWindow::closeEvent(QCloseEvent *ev)

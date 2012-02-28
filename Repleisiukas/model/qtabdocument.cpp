@@ -1,12 +1,17 @@
 #include "qtabdocument.h"
 
 QTabDocument::QTabDocument(QObject *parent) :
-	QObject(parent), _index(-1)
+	QObject(parent), _isModified(0)
 {
 }
 
 QTabDocument::~QTabDocument(){
 	qDebug("Tab was destroyed...");
+}
+
+bool QTabDocument::isModified()
+{
+	return _isModified;
 }
 
 QString QTabDocument::uid(){
@@ -24,6 +29,28 @@ QString QTabDocument::name(){
 	return _name;
 }
 
+QString QTabDocument::tabName()
+{
+	QString tabName = name();
+
+	if(!fileName().isEmpty())
+	{
+		int slash = fileName().lastIndexOf('/');
+
+		if((slash != -1) & (slash + 1 < fileName().length()))
+		{
+			tabName = fileName().mid(slash + 1);
+
+			if(isModified())
+			{
+				tabName += "*";
+			}
+		}
+	}
+
+	return tabName;
+}
+
 QString QTabDocument::input(){
 	return _input;
 }
@@ -36,18 +63,22 @@ QString QTabDocument::output(){
 	return _output;
 }
 
-//int QTabDocument::index(){
-//	return _index;
-//}
+void QTabDocument::setIsModified(bool value){
+	_isModified = value;
+
+	emit changed();
+}
 
 void QTabDocument::setFileName(QString filename){
 	_fileName = filename;
+
+	emit changed();
 }
 
 void QTabDocument::setName(QString name){
 	_name = name;
 
-	emit nameChanged();
+	emit changed();
 }
 
 void QTabDocument::setInput(QString input){
@@ -61,24 +92,3 @@ void QTabDocument::setQuery(QString query){
 void QTabDocument::setOutput(QString output){
 	_output = output;
 }
-
-void QTabDocument::nameFromFileName()
-{
-	QString name = QString();
-
-	if(!fileName().isEmpty())
-	{
-		int slash = fileName().lastIndexOf('/');
-
-		if((slash != -1) & (slash + 1 < fileName().length()))
-		{
-			name=  fileName().mid(slash + 1);
-		}
-	}
-
-	setName(name);
-}
-
-//void QTabDocument::setIndex(int index){
-//	_index = index;
-//}

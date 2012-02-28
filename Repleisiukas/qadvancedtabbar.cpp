@@ -51,7 +51,7 @@ QTabDocument* QAdvancedTabBar::createDocument()
 {
 	QTabDocument* doc = new QTabDocument(this);
 	doc->setName(QString("New %1").arg(tab_document_count++));
-	connect(doc, SIGNAL(nameChanged()), this, SLOT(updateTab()));
+	connect(doc, SIGNAL(changed()), this, SLOT(updateTab()));
 
 	documents[doc->uid()] = doc;
 
@@ -65,7 +65,7 @@ void QAdvancedTabBar::openDocument(QTabDocument* document)
 		if(!documents.contains(document->uid()))
 		{
 			documents[document->uid()] = document;
-			connect(document, SIGNAL(nameChanged()), this, SLOT(updateTab()));
+			connect(document, SIGNAL(changed()), this, SLOT(updateTab()));
 		}
 
 		int index = -1;
@@ -80,7 +80,7 @@ void QAdvancedTabBar::openDocument(QTabDocument* document)
 
 		if(index == -1)
 		{
-			index = addTab(document->name());
+			index = addTab(document->tabName());
 			setTabData(index, QVariant(document->uid()));
 		}
 
@@ -91,7 +91,7 @@ void QAdvancedTabBar::openDocument(QTabDocument* document)
 void QAdvancedTabBar::createNewTab()
 {
 	QTabDocument* doc = createDocument();
-	int index = addTab(doc->name());
+	int index = addTab(doc->tabName());
 	setTabData(index, QVariant(doc->uid()));
 
 	if(currentIndex() != index){
@@ -218,7 +218,7 @@ void QAdvancedTabBar::updateTab()
 
 		if(index != -1)
 		{
-			setTabText(index, doc->name());
+			setTabText(index, doc->tabName());
 		}
 	}
 }

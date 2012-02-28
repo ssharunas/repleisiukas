@@ -40,6 +40,7 @@ protected:
 
 private slots:
 	void onClosing();
+	void onQueryChanged();
 	void tabChanged(int index);
     void on_pushButton_2_clicked();
     void UpdateLastUsedMenu();
