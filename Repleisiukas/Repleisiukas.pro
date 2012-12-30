@@ -24,9 +24,9 @@ SOURCES += main.cpp\
     model/filesystem/local/localfolderobject.cpp \
     model/test/testobject.cpp \
     model/test/testprototype.cpp \
-    model/filesystem/local/localfolderobjectprototype.cpp \
-	model/filesystem/filesystemobjectprototype.cpp \
-    model/filesystem/filesystemobject.cpp
+    model/filesystem/filesystemobject.cpp \
+    model/filesystem/local/localfilesystemhandler.cpp \
+    model/irepleisiukasscriptobject.cpp
 
 HEADERS  += mainwindow.h \
 	ui/jshighlighter.h \
@@ -44,9 +44,10 @@ HEADERS  += mainwindow.h \
     model/filesystem/local/localfolderobject.h \
     model/test/testobject.h \
     model/test/testprototype.h \
-    model/filesystem/local/localfolderobjectprototype.h \
-	model/filesystem/filesystemobjectprototype.h \
-    model/filesystem/filesystemobject.h
+    model/filesystem/filesystemobject.h \
+    model/filesystem/local/localfilesystemhandler.h \
+    model/filesystem/openmodes.h \
+    model/irepleisiukasscriptobject.h
 
 FORMS    += mainwindow.ui \
     qadvancedinputpanel.ui

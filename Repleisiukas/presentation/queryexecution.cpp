@@ -6,13 +6,35 @@
 #include <QApplication>
 #include <QDir>
 #include <QScriptEngineDebugger>
-#include "../model/test/testobject.h"
+#include <QScriptValue>
+
+#include "../model/qfilesystemaccess.h"
+#include "../model/irepleisiukasscriptobject.h"
 
 QueryExecution::QueryExecution(QObject *parent) :
 	QObject(parent), _fileOperations(0)
 {
-
 }
+
+//TODO: perkelti nuo sicia iki endtoto viska i koki IRepleisiukasScriptObject.cpp
+Q_DECLARE_METATYPE(IFileSystemObject*)
+
+typedef IFileSystemObject* pIFileSystemObject;
+
+QScriptValue IFileSystemObject_ToScriptValue(QScriptEngine *engine, const pIFileSystemObject &s)
+{
+	if(s != 0)
+		return s->toScriptValue(engine);
+
+	return engine->nullValue();
+}
+
+void IFileSystemObject_FromScriptValue(const QScriptValue &obj, pIFileSystemObject &s)
+{
+	if(s != 0)
+		s->fromScriptValue(obj);
+}
+//endtodo
 
 QueryExecution::QueryExecution(FileLoadSave* fileOperations, QObject *parent) :
 	QObject(parent)
@@ -104,8 +126,12 @@ QString QueryExecution::Execute(QString query, QString userInput)
 	QString fullQuery = resources + " ;\n" + extensions + " ;\n " + userInput + " ;\n" + query;
 
 	QScriptEngine engine;
-	TestObject* test = new TestObject(&engine);
-	engine.globalObject().setProperty("XXX", test->constructor());
+
+    QFileSystemAccess* test = new QFileSystemAccess(&engine);
+    qScriptRegisterMetaType(&engine, &IFileSystemObject_ToScriptValue, &IFileSystemObject_FromScriptValue);
+
+	QScriptValue v= engine.newQObject(test, QScriptEngine::ScriptOwnership, QScriptEngine::ExcludeSuperClassContents);
+	engine.globalObject().setProperty("FS", v);
 
 	QSettings settings;
 	bool debugger = settings.value("/settings/debugger").toBool();

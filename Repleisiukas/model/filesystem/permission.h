@@ -18,6 +18,7 @@ class Permission : public QObject
 		int gid;
 		QString user;
 
+    public slots:
 		QString toString();
 
 	private:

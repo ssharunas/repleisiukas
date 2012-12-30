@@ -7,18 +7,18 @@ namespace FileSystemFactory
 {
 	namespace
 	{
-		QString defaultNamespace;
+		QString _defaultScheme;
 		QHash<QString, IFilesystemHandler*> handlers;
 	}
 
-	QString GetDefaulktNamespace()
+	QString GetDefaultScheme()
 	{
-		return defaultNamespace;
+		return _defaultScheme;
 	}
 
-	void GetDefaulktNamespace(QString defaultNamespace)
+	void SetDefaultScheme(QString defaultScheme)
 	{
-		defaultNamespace = defaultNamespace;
+		_defaultScheme = defaultScheme;
 	}
 
 	void RegisterFileSystemHandler(QString scheme, IFilesystemHandler* handler)
@@ -32,11 +32,15 @@ namespace FileSystemFactory
 	IFilesystemHandler* GetHandler(QString scheme)
 	{
 		if(scheme.isEmpty())
-			scheme = GetDefaulktNamespace();
+			scheme = GetDefaultScheme();
 
 		if(handlers.contains(scheme))
 			return handlers[scheme];
 
 		return 0;
 	}
+
+    QList<QString> registeredSchemes(){
+        return handlers.keys();
+    }
 }

@@ -4,26 +4,22 @@
 #include "ifilesystemobject.h"
 
 #include <QScriptEngine>
-#include <QtScript/QScriptClass>
 
-class FileSystemObject : public QObject, public QScriptClass, IFileSystemObject
+class FileSystemObject : public IFileSystemObject
 {
-		Q_OBJECT
+        Q_OBJECT
 	public:
-		explicit FileSystemObject(QScriptEngine *engine);
+        explicit FileSystemObject(QScriptEngine *engine);
 		~FileSystemObject();
 
 	signals:
 		
 	public slots:
 
-	protected:
-		QScriptString name;
+    protected:
 		QScriptValue permissions;
 		QScriptValue isClosed;
 
-		QScriptValue proto;
-		QScriptValue ctor;
 
 };
 
