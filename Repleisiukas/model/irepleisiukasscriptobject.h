@@ -7,19 +7,19 @@
 
 class IRepleisiukasScriptObject : public QObject, protected QScriptable
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit IRepleisiukasScriptObject(QScriptEngine *engine);
-    virtual ~IRepleisiukasScriptObject() {}
+	explicit IRepleisiukasScriptObject(QScriptEngine *engine);
+	virtual ~IRepleisiukasScriptObject() {}
 
-    virtual QScriptValue toScriptValue(QScriptEngine *engine);
-    virtual void fromScriptValue(const QScriptValue &obj);
+	virtual QScriptValue toScriptValue(QScriptEngine *engine);
+	virtual void fromScriptValue(const QScriptValue &obj);
 
 protected:
-    QScriptValue $this;
+	QScriptValue $this;
 
 private:
-    QScriptEngine _engine;
+	QScriptEngine _engine;
 };
 
 #endif // IREPLEISIUKASSCRIPTOBJECT_H

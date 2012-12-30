@@ -2,36 +2,35 @@
 #include "filesystem/filesystemfactory.h"
 
 #include <QScriptEngine>
-#include <QRegExp>
 #include <QDir>
 #include <QDebug>
 
 QFileSystemAccess::QFileSystemAccess(QScriptEngine *engine) :
 	QObject(0)
 {
-    _engine = engine;
+	_engine = engine;
 }
 
 IFileSystemObject* QFileSystemAccess::open(QString path, QString mode)
 {
 	IFileSystemObject* result = 0;
 
-    QUrl url(path);
+	QUrl url(path);
 
-    qDebug()<< "path:" << url.path()
-            << "password:" << url.password()
-            << "scheme:" << url.scheme()
-            << "host:" << url.host()
-            << "local:" << url.isLocalFile()
-            << "relative:" << url.isRelative()
-            << "userInfo:" << url.userInfo()
-            << (url.isValid() ? "valid" : "invalid");
+	qDebug()<< "path:" << url.path()
+			<< "password:" << url.password()
+			<< "scheme:" << url.scheme()
+			<< "host:" << url.host()
+			<< "local:" << url.isLocalFile()
+			<< "relative:" << url.isRelative()
+			<< "userInfo:" << url.userInfo()
+			<< (url.isValid() ? "valid" : "invalid");
 
-    IFilesystemHandler* handler = FileSystemFactory::GetHandler(url.scheme());
+	IFilesystemHandler* handler = FileSystemFactory::GetHandler(url.scheme());
 
 	if(handler)
-    {
-        result = handler->open(url, mode, _engine);
+	{
+		result = handler->open(url, mode, _engine);
 
 		handler = 0;
 	}
@@ -43,30 +42,30 @@ bool QFileSystemAccess::exists(QString path)
 {
 	bool result = false;
 
-    QUrl url(path);
-    IFilesystemHandler* handler = FileSystemFactory::GetHandler(url.scheme());
+	QUrl url(path);
+	IFilesystemHandler* handler = FileSystemFactory::GetHandler(url.scheme());
 
 	if(handler)
-    {
-        result = handler->exists(url);
+	{
+		result = handler->exists(url);
 
 		handler = 0;
 	}
 
-    return result;
+	return result;
 }
 
 QString QFileSystemAccess::cwd()
 {
-    return QDir::currentPath();
+	return QDir::currentPath();
 }
 
 QString QFileSystemAccess::toString()
 {
-    return QString("[File system access]");
+	return QString("[File system access]");
 }
 
 QStringList QFileSystemAccess::schemes()
 {
-    return FileSystemFactory::registeredSchemes();
+	return FileSystemFactory::registeredSchemes();
 }

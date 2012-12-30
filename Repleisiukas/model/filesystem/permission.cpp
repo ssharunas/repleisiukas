@@ -1,5 +1,7 @@
 #include "permission.h"
 
+//Q_DECLARE_METATYPE(Permission*)
+
 Permission::Permission(QObject *parent) :
 	QObject(parent),
 	uR(false), uW(false), uX(false),

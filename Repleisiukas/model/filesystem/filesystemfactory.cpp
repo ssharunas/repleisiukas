@@ -40,7 +40,7 @@ namespace FileSystemFactory
 		return 0;
 	}
 
-    QList<QString> registeredSchemes(){
-        return handlers.keys();
-    }
+	QList<QString> registeredSchemes(){
+		return handlers.keys();
+	}
 }

@@ -11,17 +11,17 @@ class QFileSystemAccess : public QObject
 {
 		Q_OBJECT
 	public:
-        explicit QFileSystemAccess(QScriptEngine *engine);
+		explicit QFileSystemAccess(QScriptEngine *engine);
 
 	public slots:
 		IFileSystemObject* open(QString path, QString mode);
 		bool exists(QString path);
-        QString cwd();
+		QString cwd();
 		QString toString();
-        QStringList schemes();
+		QStringList schemes();
 
 	private:
-        QScriptEngine* _engine;
+		QScriptEngine* _engine;
 };
 
 #endif // QFILESYSTEMACCESS_H

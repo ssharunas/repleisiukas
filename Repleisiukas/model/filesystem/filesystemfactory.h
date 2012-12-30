@@ -12,7 +12,7 @@ namespace FileSystemFactory
 
 	void RegisterFileSystemHandler(QString scheme, IFilesystemHandler* handler);
 	IFilesystemHandler* GetHandler(QString scheme);
-    QList<QString> registeredSchemes();
+	QList<QString> registeredSchemes();
 }
 
 #endif // FILESYSTEMFACTORY_H

@@ -127,8 +127,8 @@ QString QueryExecution::Execute(QString query, QString userInput)
 
 	QScriptEngine engine;
 
-    QFileSystemAccess* test = new QFileSystemAccess(&engine);
-    qScriptRegisterMetaType(&engine, &IFileSystemObject_ToScriptValue, &IFileSystemObject_FromScriptValue);
+	QFileSystemAccess* test = new QFileSystemAccess(&engine);
+	qScriptRegisterMetaType(&engine, &IFileSystemObject_ToScriptValue, &IFileSystemObject_FromScriptValue);
 
 	QScriptValue v= engine.newQObject(test, QScriptEngine::ScriptOwnership, QScriptEngine::ExcludeSuperClassContents);
 	engine.globalObject().setProperty("FS", v);

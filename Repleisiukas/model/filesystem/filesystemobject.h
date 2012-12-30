@@ -7,16 +7,16 @@
 
 class FileSystemObject : public IFileSystemObject
 {
-        Q_OBJECT
+	Q_OBJECT
 	public:
-        explicit FileSystemObject(QScriptEngine *engine);
+		explicit FileSystemObject(QScriptEngine *engine);
 		~FileSystemObject();
 
 	signals:
 		
 	public slots:
 
-    protected:
+	protected:
 		QScriptValue permissions;
 		QScriptValue isClosed;
 

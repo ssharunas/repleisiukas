@@ -5,7 +5,7 @@
 
 class Permission : public QObject
 {
-		Q_OBJECT
+	Q_OBJECT
 	public:
 		explicit Permission(QObject *parent = 0);
 
@@ -18,7 +18,7 @@ class Permission : public QObject
 		int gid;
 		QString user;
 
-    public slots:
+	public slots:
 		QString toString();
 
 	private:

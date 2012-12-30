@@ -22,8 +22,6 @@ SOURCES += main.cpp\
     model/filesystem/filesystemfactory.cpp \
     model/filesystem/permission.cpp \
     model/filesystem/local/localfolderobject.cpp \
-    model/test/testobject.cpp \
-    model/test/testprototype.cpp \
     model/filesystem/filesystemobject.cpp \
     model/filesystem/local/localfilesystemhandler.cpp \
     model/irepleisiukasscriptobject.cpp
@@ -42,8 +40,6 @@ HEADERS  += mainwindow.h \
     model/filesystem/whence.h \
     model/filesystem/permission.h \
     model/filesystem/local/localfolderobject.h \
-    model/test/testobject.h \
-    model/test/testprototype.h \
     model/filesystem/filesystemobject.h \
     model/filesystem/local/localfilesystemhandler.h \
     model/filesystem/openmodes.h \

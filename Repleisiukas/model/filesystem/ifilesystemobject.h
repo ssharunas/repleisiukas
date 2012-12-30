@@ -12,11 +12,11 @@
 class IFileSystemObject : public IRepleisiukasScriptObject
 {
 	public:
-        IFileSystemObject(QScriptEngine* engine) : IRepleisiukasScriptObject(engine) {}
+		IFileSystemObject(QScriptEngine* engine) : IRepleisiukasScriptObject(engine) {}
 		virtual ~IFileSystemObject() {}
 
-        virtual QString getName() = 0;
-        virtual void setName(QString name) = 0;
+		virtual QString getName() = 0;
+		virtual void setName(QString name) = 0;
 //		virtual void setPermissions(Permission* permissions) = 0;
 //		virtual Permission* getPermissions() = 0;
 //		virtual bool getIsClosed() = 0;

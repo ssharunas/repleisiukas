@@ -1,19 +1,19 @@
 #include "irepleisiukasscriptobject.h"
 
 IRepleisiukasScriptObject::IRepleisiukasScriptObject(QScriptEngine *engine) :
-    QObject(engine), _engine(engine)
+	QObject(engine), _engine(engine)
 {
 }
 
 QScriptValue IRepleisiukasScriptObject::toScriptValue(QScriptEngine *engine)
 {
-    if(!$this.isValid())
-        $this = engine->newQObject(this, QScriptEngine::ScriptOwnership, QScriptEngine::ExcludeSuperClassContents);
+	if(!$this.isValid())
+		$this = engine->newQObject(this, QScriptEngine::ScriptOwnership, QScriptEngine::ExcludeSuperClassContents);
 
-    return $this;
+	return $this;
 }
 
 void IRepleisiukasScriptObject::fromScriptValue(const QScriptValue &obj)
 {
-    Q_UNUSED(obj);
+	Q_UNUSED(obj);
 }
