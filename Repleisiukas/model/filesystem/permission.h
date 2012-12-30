@@ -2,12 +2,13 @@
 #define PERMISSION_H
 
 #include <QObject>
+#include "../irepleisiukasscriptobject.h"
 
-class Permission : public QObject
+class Permission : public IRepleisiukasScriptObject
 {
 	Q_OBJECT
 	public:
-		explicit Permission(QObject *parent = 0);
+		explicit Permission(QScriptEngine *parent = 0);
 
 		bool
 			uR, uW, uX,
@@ -17,6 +18,9 @@ class Permission : public QObject
 		int uid;
 		int gid;
 		QString user;
+		QString group;
+
+		static void registerMetaType(QScriptEngine *engine);
 
 	public slots:
 		QString toString();

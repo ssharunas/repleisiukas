@@ -1,9 +1,10 @@
 #include "permission.h"
+#include "../scriptvalueconverttemplate.h"
 
-//Q_DECLARE_METATYPE(Permission*)
+Q_DECLARE_METATYPE(Permission*)
 
-Permission::Permission(QObject *parent) :
-	QObject(parent),
+Permission::Permission(QScriptEngine *parent) :
+	IRepleisiukasScriptObject(parent),
 	uR(false), uW(false), uX(false),
 	gR(false), gW(false), gX(false),
 	oR(false), oW(false), oX(false),
@@ -12,11 +13,17 @@ Permission::Permission(QObject *parent) :
 
 }
 
+void Permission::registerMetaType(QScriptEngine *engine)
+{
+	qScriptRegisterMetaType<Permission*>(engine, &convertToScriptValue<Permission>, &convertFromScriptValue<Permission>);
+}
+
 QString Permission::toString()
 {
 	return formatPermission(uR, uW, uX) +
 			formatPermission(gR, gW, gX) +
-			formatPermission(oR, oW, oX);
+			formatPermission(oR, oW, oX) +
+			QString(" %1(%2) %3(%4)").arg(user).arg(uid).arg(group).arg(gid);
 }
 
 QString Permission::formatPermission(bool r, bool w, bool x)

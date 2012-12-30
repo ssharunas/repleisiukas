@@ -12,12 +12,13 @@ class FileSystemObject : public IFileSystemObject
 		explicit FileSystemObject(QScriptEngine *engine);
 		~FileSystemObject();
 
+		static void registerMetaType(QScriptEngine *engine);
+
 	signals:
 		
 	public slots:
 
 	protected:
-		QScriptValue permissions;
 		QScriptValue isClosed;
 
 

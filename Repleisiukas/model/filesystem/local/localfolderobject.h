@@ -11,6 +11,7 @@ class LocalFolderObject : public FileSystemObject
 {
 	Q_OBJECT
 	Q_PROPERTY(QString name READ getName WRITE setName)
+	Q_PROPERTY(Permission* permissions READ getPermissions WRITE setPermissions)
 
 	public:
 		LocalFolderObject(QUrl url, QString mode, QScriptEngine *engine = 0);
@@ -18,6 +19,9 @@ class LocalFolderObject : public FileSystemObject
 
 		virtual QString getName();
 		virtual void setName(QString name);
+
+		virtual void setPermissions(Permission* permissions);
+		virtual Permission* getPermissions();
 
 	signals:
 

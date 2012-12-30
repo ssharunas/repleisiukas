@@ -43,7 +43,8 @@ HEADERS  += mainwindow.h \
     model/filesystem/filesystemobject.h \
     model/filesystem/local/localfilesystemhandler.h \
     model/filesystem/openmodes.h \
-    model/irepleisiukasscriptobject.h
+    model/irepleisiukasscriptobject.h \
+    model/scriptvalueconverttemplate.h
 
 FORMS    += mainwindow.ui \
     qadvancedinputpanel.ui
