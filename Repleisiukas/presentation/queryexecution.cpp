@@ -11,6 +11,8 @@
 #include "../model/qfilesystemaccess.h"
 #include "../model/irepleisiukasscriptobject.h"
 #include "../model/filesystem/filesystemobject.h"
+#include "../model/filesystem/local/localfolderobject.h"
+#include <QList>
 
 QueryExecution::QueryExecution(QObject *parent) :
 	QObject(parent), _fileOperations(0)
@@ -94,6 +96,9 @@ QString QueryExecution::LoadExtensions(){
 	return result;
 }
 
+Q_DECLARE_METATYPE(IFileSystemObject*)
+Q_DECLARE_METATYPE(QList<IFileSystemObject*>)
+
 QString QueryExecution::Execute(QString query, QString userInput)
 {
 	QString result;
@@ -111,6 +116,7 @@ QString QueryExecution::Execute(QString query, QString userInput)
 	QFileSystemAccess* test = new QFileSystemAccess(&engine);
 	FileSystemObject::registerMetaType(&engine);
 	Permission::registerMetaType(&engine);
+	qScriptRegisterSequenceMetaType<QList<IFileSystemObject*> >(&engine);
 
 	QScriptValue v= engine.newQObject(test, QScriptEngine::ScriptOwnership, QScriptEngine::ExcludeSuperClassContents);
 	engine.globalObject().setProperty("FS", v);

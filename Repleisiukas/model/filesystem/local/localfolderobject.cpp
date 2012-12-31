@@ -78,7 +78,40 @@ Permission *LocalFolderObject::getPermissions()
 	return permission;
 }
 
+QString LocalFolderObject::getPath()
+{
+	return _dir.absolutePath();
+}
+
+QList<IFileSystemObject *> LocalFolderObject::getFolders()
+{
+	QList<IFileSystemObject *> result;
+
+	QFileInfoList folders = _dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden);
+	foreach (const QFileInfo folder, folders) {
+		result.append(new LocalFolderObject(QUrl(folder.absoluteFilePath()), _mode, _engine));
+	}
+
+	return result;
+}
+
+QList<IFileSystemObject *> LocalFolderObject::getFiles()
+{
+	QList<IFileSystemObject *> result;
+
+	//TODO: finish
+
+	return result;
+}
+
 QString LocalFolderObject::toString()
 {
-	return "[Folder object]";
+	QString permissionsStr;
+	Permission* permissions = getPermissions();
+	if(permissions){
+		permissionsStr = permissions->toString() + " ";
+		permissions->deleteLater();
+	}
+
+	return QString("{%2%1}").arg(getPath()).arg(permissionsStr);
 }

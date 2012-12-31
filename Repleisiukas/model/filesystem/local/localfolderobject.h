@@ -11,6 +11,9 @@ class LocalFolderObject : public FileSystemObject
 {
 	Q_OBJECT
 	Q_PROPERTY(QString name READ getName WRITE setName)
+	Q_PROPERTY(QString path READ getPath)
+	Q_PROPERTY(QList<IFileSystemObject*> folders READ getFolders)
+	Q_PROPERTY(QList<IFileSystemObject*> files READ getFiles)
 	Q_PROPERTY(Permission* permissions READ getPermissions WRITE setPermissions)
 
 	public:
@@ -22,6 +25,10 @@ class LocalFolderObject : public FileSystemObject
 
 		virtual void setPermissions(Permission* permissions);
 		virtual Permission* getPermissions();
+
+		virtual QString getPath();
+		QList<IFileSystemObject *> getFolders();
+		QList<IFileSystemObject *> getFiles();
 
 	signals:
 

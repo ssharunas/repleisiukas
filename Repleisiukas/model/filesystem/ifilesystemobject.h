@@ -19,6 +19,8 @@ class IFileSystemObject : public IRepleisiukasScriptObject
 		virtual void setName(QString name) = 0;
 		virtual void setPermissions(Permission* permissions) = 0;
 		virtual Permission* getPermissions() = 0;
+		virtual QString getPath() = 0;
+
 //		virtual bool getIsClosed() = 0;
 
 //		virtual QString ReadAll() = 0;
