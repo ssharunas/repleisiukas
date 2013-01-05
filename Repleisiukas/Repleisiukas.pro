@@ -55,13 +55,4 @@ OTHER_FILES += \
 RESOURCES += \
 	other/resources.qrc
 
-
-
-
-
-
-
-
-
-
-
+LIBS         += -lqscintilla2

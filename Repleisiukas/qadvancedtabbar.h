@@ -42,6 +42,7 @@ class QAdvancedTabBar : public QTabBar
 	private slots:
 		void closeTab(int index);
 		void restoreTab();
+		void updateTab();
 };
 
 #endif // QADVANCEDTABBAR_H

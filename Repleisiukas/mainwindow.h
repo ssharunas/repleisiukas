@@ -7,6 +7,9 @@
 #include "presentation/queryexecution.h"
 #include "model/qtabdocument.h"
 
+#include <Qsci/qsciscintilla.h>
+#include <Qsci/qscilexerjavascript.h>
+
 namespace Ui {
     class MainWindow;
 }
@@ -22,11 +25,13 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    JSHighlighter *highlighter;
+//    JSHighlighter *highlighter;
 
     FileLoadSave* fileOperations;
 	QueryExecution *queryExecution;
 	QTabDocument * tabDocument;
+	QsciScintilla* query;
+	bool contructionInProgress;
 
 private:
 
@@ -39,6 +44,7 @@ protected:
 
 private slots:
 	void onClosing();
+	void onQueryChanged();
 	void tabChanged(int index);
     void on_pushButton_2_clicked();
     void UpdateLastUsedMenu();
@@ -52,6 +58,7 @@ private slots:
 	void on_actionZoom_In_triggered();
 	void on_actionZoom_Out_triggered();
 	void on_actionDebugger_triggered();
+	void on_actionSave_As_triggered();
 };
 
 #endif // MAINWINDOW_H

@@ -7,10 +7,13 @@
 #include <QSettings>
 #include <QDebug>
 #include <QShortcut>
+
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
-	ui(new Ui::MainWindow)
+	ui(new Ui::MainWindow),
+	query(0)
 {
+	contructionInProgress = true;
 	QCoreApplication::setOrganizationName("SoftDent");
 	QCoreApplication::setOrganizationDomain("softdent.lt");
 	QCoreApplication::setApplicationName("Repleisiukas");
@@ -18,10 +21,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	fileOperations = new FileLoadSave(this);
 	queryExecution = new QueryExecution(fileOperations, this);
 	ui->setupUi(this);
-	highlighter = new JSHighlighter(ui->query->document());
+//	highlighter = new JSHighlighter(ui->query->document());
 
-	ui->query->addAction(ui->actionExecute);
-	ui->query->setPlainText(fileOperations->GetLastQuery());
+//	ui->query->addAction(ui->actionExecute);
+//	ui->query->setPlainText(fileOperations->GetLastQuery());
 	UpdateLastUsedMenu();
 
 	QSettings settings;
@@ -31,24 +34,42 @@ MainWindow::MainWindow(QWidget *parent) :
 	bool debugger = settings.value("/settings/debugger").toBool();
 	ui->actionDebugger->setChecked(debugger);
 
-	QShortcut* shortcut = new QShortcut(QKeySequence(tr("Ctrl+Return")), ui->query);
-	connect(shortcut, SIGNAL(activated()), ui->actionExecute, SLOT(trigger()));
-
-	connect(fileOperations, SIGNAL(UpdateLastUsed()), this, SLOT(UpdateLastUsedMenu()));
-	connect(ui->stringIn, SIGNAL(updateRequest()), this, SLOT(on_pushButton_Go_clicked()));
-
 	ui->tabs->createNewTab();
 	tabDocument = ui->tabs->getCurrentDocument();
 
 	connect(ui->tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 	ui->tabs->setTrashButton(ui->trashButton);
 
+	query = new QsciScintilla;
+	ui->splitter->addWidget(query);
+
+	QsciLexerJavaScript* lexer = new QsciLexerJavaScript();
+	lexer->setHighlightTripleQuotedStrings(true);
+	query->setLexer(lexer);
+	query->setAutoIndent(true);
+	query->setBraceMatching(QsciScintilla::SloppyBraceMatch);
+	query->setFolding(QsciScintilla::BoxedTreeFoldStyle);
+	query->setWrapMode(QsciScintilla::WrapWord);
+	query->setUtf8(true);
+
+	QShortcut* shortcut = new QShortcut(QKeySequence(tr("Ctrl+Return")), query);
+	connect(shortcut, SIGNAL(activated()), ui->actionExecute, SLOT(trigger()));
+
+	shortcut = new QShortcut(QKeySequence(tr("Ctrl+Enter")), query);
+	connect(shortcut, SIGNAL(activated()), ui->actionExecute, SLOT(trigger()));
+
 	LoadSession();
+
+	connect(query, SIGNAL(textChanged()), this, SLOT(onQueryChanged()));
+	connect(fileOperations, SIGNAL(UpdateLastUsed()), this, SLOT(UpdateLastUsedMenu()));
+	connect(ui->stringIn, SIGNAL(updateRequest()), this, SLOT(on_pushButton_Go_clicked()));
+
+	contructionInProgress = false;
 }
 
 MainWindow::~MainWindow()
 {
-	delete highlighter;
+//	delete highlighter;
 	delete ui;
 }
 
@@ -71,7 +92,7 @@ void MainWindow::setCurretTabDocument(QTabDocument * doc){
 		//tabDocument->setFileName();
 //		tabDocument->setName();
 		tabDocument->setInput(ui->stringIn->toPlainText());
-		tabDocument->setQuery(ui->query->toPlainText());
+		tabDocument->setQuery(query->text());
 		tabDocument->setOutput(ui->stringOut->toPlainText());
 	}
 
@@ -79,7 +100,7 @@ void MainWindow::setCurretTabDocument(QTabDocument * doc){
 	if(tabDocument != 0)
 	{
 		ui->stringIn->setText(tabDocument->input());
-		ui->query->setText(tabDocument->query());
+		query->setText(tabDocument->query());
 		ui->stringOut->setPlainText(tabDocument->output());
 	}
 }
@@ -103,11 +124,18 @@ void MainWindow::on_openFile_clicked()
 {
 	QAction *senderAction = dynamic_cast<QAction*>(sender());
 
-	if(senderAction){
+	if(senderAction)
+	{
 		QString file = senderAction->data().toString();
 		qDebug() << "trying to open file" << file;
-
 		LoadQueryToGUI(fileOperations->LoadFromFile(file));
+
+		if(tabDocument != 0)
+		{
+			tabDocument->setFileName(file);
+			tabDocument->setQuery(query->text());
+			tabDocument->setIsModified(false);
+		}
 	}
 }
 
@@ -115,7 +143,7 @@ void MainWindow::LoadQueryToGUI(QString query)
 {
 	if(!query.isNull())
 	{
-		ui->query->setPlainText(query);
+		this->query->setText(query);
 
 		QString autoload = fileOperations->GetAutoLoadText(query);
 		if(!autoload.isNull())
@@ -128,19 +156,58 @@ void MainWindow::LoadQueryToGUI(QString query)
 
 void MainWindow::on_pushButton_Go_clicked()
 {
-	fileOperations->SetLastQuery(ui->query->toPlainText());
-        QString result = queryExecution->Execute(ui->query->toPlainText(), ui->stringIn->text());
-        ui->stringOut->setPlainText(result);
+	qDebug() << contructionInProgress;
+	if(!contructionInProgress)
+	{
+		fileOperations->SetLastQuery(query->text());
+			QString result = queryExecution->Execute(query->text(), ui->stringIn->text());
+			ui->stringOut->setPlainText(result);
+	}
 }
 
 void MainWindow::on_actionSave_triggered()
 {
-	fileOperations->SaveToFile(ui->query->toPlainText());
+	if(tabDocument != 0)
+	{
+		if(!tabDocument->fileName().isEmpty())
+		{
+			fileOperations->SaveToFile(tabDocument->fileName(), query->text());
+			tabDocument->setQuery(query->text());
+			tabDocument->setIsModified(false);
+		}else
+		{
+			on_actionSave_As_triggered();
+		}
+	}
+}
+
+void MainWindow::on_actionSave_As_triggered()
+{
+	QString fileName = fileOperations->SaveToFile(query->text());
+	if(!fileName.isEmpty())
+	{
+		if(tabDocument != 0)
+		{
+			tabDocument->setFileName(fileName);
+			tabDocument->setQuery(query->text());
+			tabDocument->setIsModified(false);
+		}
+	}
 }
 
 void MainWindow::on_actionLoad_triggered()
 {
-	LoadQueryToGUI(fileOperations->LoadFromFile());
+	QString fileName = fileOperations->GetLoadFromFileFilename();
+	if(!fileName.isEmpty())
+	{
+		if(tabDocument != 0)
+		{
+			tabDocument->setFileName(fileName);
+			tabDocument->setIsModified(false);
+		}
+
+		LoadQueryToGUI(fileOperations->LoadFromFile(fileName));
+	}
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -179,12 +246,12 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_actionZoom_In_triggered()
 {
-	ui->query->zoomIn();
+	query->zoomIn();
 }
 
 void MainWindow::on_actionZoom_Out_triggered()
 {
-	ui->query->zoomOut();
+	query->zoomOut();
 }
 
 void MainWindow::onClosing()
@@ -198,6 +265,14 @@ void MainWindow::onClosing()
 	}
 
 	fileOperations->saveCurrentSession(documents);
+}
+
+void MainWindow::onQueryChanged()
+{
+	if(!contructionInProgress && tabDocument != 0)
+	{
+		tabDocument->setIsModified(query->text() != tabDocument->query());
+	}
 }
 
 void MainWindow::closeEvent(QCloseEvent *ev)

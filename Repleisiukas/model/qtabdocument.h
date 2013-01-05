@@ -11,24 +11,29 @@ class QTabDocument : public QObject
 		explicit QTabDocument(QObject *parent = 0);
 		~QTabDocument();
 
+		bool isModified();
 		QString uid();
 		QString fileName();
 		QString name();
+		QString tabName();
 
 		QString input();
 		QString query();
 		QString output();
-//		int index();
 
+		void setIsModified(bool);
 		void setFileName(QString);
 		void setName(QString);
 
 		void setInput(QString);
 		void setQuery(QString);
 		void setOutput(QString);
-//		void setIndex(int);
+
+	signals:
+		void changed();
+
 	private:
-		int _index;
+		bool _isModified;
 		QUuid _uid;
 		QString _fileName;
 		QString _name;
