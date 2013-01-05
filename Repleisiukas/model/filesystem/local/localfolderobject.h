@@ -2,6 +2,7 @@
 #define LOCALFOLDEROBJECT_H
 
 #include "../filesystemobject.h"
+#include "../openmodes.h"
 
 #include <QUrl>
 #include <QDir>

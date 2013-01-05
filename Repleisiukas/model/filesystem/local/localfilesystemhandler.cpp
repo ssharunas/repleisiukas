@@ -1,5 +1,7 @@
 #include "localfilesystemhandler.h"
 #include "localfolderobject.h"
+#include "localfileobject.h"
+
 #include <QDir>
 #include <QFileInfo>
 
@@ -24,8 +26,7 @@ IFileSystemObject *LocalFileSystemHandler::open(QUrl url, QString mode, QScriptE
 		if(fileInfo.isDir()){
 			return new LocalFolderObject(url, mode, engine);
 		}else{
-//			TODO: uncomment
-//			return new LocalFileObject(url, mode, engine);
+			return new LocalFileObject(url, mode, engine);
 		}
 	}
 

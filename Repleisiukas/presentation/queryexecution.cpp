@@ -107,8 +107,6 @@ QString QueryExecution::Execute(QString query, QString userInput)
 	QString extensions = LoadExtensions();
 	query = PreProxessQuey(query);
 
-	qDebug() << extensions;
-
 	QString fullQuery = resources + " ;\n" + extensions + " ;\n " + userInput + " ; \"\" ; \n" + query;
 
 	QScriptEngine engine;
@@ -136,7 +134,7 @@ QString QueryExecution::Execute(QString query, QString userInput)
 		QScriptValueIterator it(value);
 		while (it.hasNext()) {
 			it.next();
-			qDebug() << it.name() << ": " << it.value().toString();
+//			qDebug() << it.name() << ": " << it.value().toString();
 		}
 
 		result = "Klaida: " + value.toString();

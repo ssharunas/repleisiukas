@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QDebug>
 #include <QFile>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -57,6 +56,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	shortcut = new QShortcut(QKeySequence(tr("Ctrl+Enter")), query);
 	connect(shortcut, SIGNAL(activated()), ui->actionExecute, SLOT(trigger()));
+
+	shortcut = new QShortcut(QKeySequence(tr("Ctrl+Shift+z")), query);
+	connect(shortcut, SIGNAL(activated()), query, SLOT(redo()));
 
 	LoadSession();
 
@@ -127,7 +129,6 @@ void MainWindow::on_openFile_clicked()
 	if(senderAction)
 	{
 		QString file = senderAction->data().toString();
-		qDebug() << "trying to open file" << file;
 		LoadQueryToGUI(fileOperations->LoadFromFile(file));
 
 		if(tabDocument != 0)
@@ -156,7 +157,6 @@ void MainWindow::LoadQueryToGUI(QString query)
 
 void MainWindow::on_pushButton_Go_clicked()
 {
-	qDebug() << contructionInProgress;
 	if(!contructionInProgress)
 	{
 		fileOperations->SetLastQuery(query->text());

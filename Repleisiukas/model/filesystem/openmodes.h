@@ -3,12 +3,11 @@
 
 #include <QString>
 
-const char* MODE_READ = "r";
-const char* MODE_WRITE = "w";
-const char* MODE_APPEND = "a";
+#define MODE_READ "r"
+#define MODE_WRITE "w"
+#define MODE_READ_WRITE "rw"
+#define MODE_APPEND "a"
 
-bool is_valid_open_mode(QString mode){
-	return mode == MODE_READ || mode == MODE_WRITE || mode == MODE_APPEND;
-}
+bool is_valid_open_mode(QString mode);
 
 #endif // OPENMODES_H

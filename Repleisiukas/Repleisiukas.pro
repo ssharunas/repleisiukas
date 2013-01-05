@@ -11,43 +11,46 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+		mainwindow.cpp \
 	ui/jshighlighter.cpp \
-    qadvancedinputpanel.cpp \
+	qadvancedinputpanel.cpp \
 	presentation/fileloadsave.cpp \
-    presentation/queryexecution.cpp \
-    model/qtabdocument.cpp \
-    qadvancedtabbar.cpp \
-    model/qfilesystemaccess.cpp \
-    model/filesystem/filesystemfactory.cpp \
-    model/filesystem/permission.cpp \
-    model/filesystem/local/localfolderobject.cpp \
-    model/filesystem/filesystemobject.cpp \
-    model/filesystem/local/localfilesystemhandler.cpp \
-    model/irepleisiukasscriptobject.cpp
+	presentation/queryexecution.cpp \
+	model/qtabdocument.cpp \
+	qadvancedtabbar.cpp \
+	model/qfilesystemaccess.cpp \
+	model/filesystem/filesystemfactory.cpp \
+	model/filesystem/permission.cpp \
+	model/filesystem/local/localfolderobject.cpp \
+	model/filesystem/filesystemobject.cpp \
+	model/filesystem/local/localfilesystemhandler.cpp \
+	model/irepleisiukasscriptobject.cpp \
+	model/filesystem/local/localfileobject.cpp \
+	model/filesystem/openmodes.cpp
 
 HEADERS  += mainwindow.h \
 	ui/jshighlighter.h \
-    qadvancedinputpanel.h \
+	qadvancedinputpanel.h \
 	presentation/fileloadsave.h \
-    presentation/queryexecution.h \
-    model/qtabdocument.h \
-    qadvancedtabbar.h \
-    model/qfilesystemaccess.h \
-    model/filesystem/filesystemfactory.h \
-    model/filesystem/ifilesystemhandler.h \
-    model/filesystem/ifilesystemobject.h \
-    model/filesystem/whence.h \
-    model/filesystem/permission.h \
-    model/filesystem/local/localfolderobject.h \
-    model/filesystem/filesystemobject.h \
-    model/filesystem/local/localfilesystemhandler.h \
-    model/filesystem/openmodes.h \
-    model/irepleisiukasscriptobject.h \
-    model/scriptvalueconverttemplate.h
+	presentation/queryexecution.h \
+	model/qtabdocument.h \
+	qadvancedtabbar.h \
+	model/qfilesystemaccess.h \
+	model/filesystem/filesystemfactory.h \
+	model/filesystem/ifilesystemhandler.h \
+	model/filesystem/ifilesystemobject.h \
+	model/filesystem/whence.h \
+	model/filesystem/permission.h \
+	model/filesystem/local/localfolderobject.h \
+	model/filesystem/filesystemobject.h \
+	model/filesystem/local/localfilesystemhandler.h \
+	model/filesystem/openmodes.h \
+	model/irepleisiukasscriptobject.h \
+	model/scriptvalueconverttemplate.h \
+	model/filesystem/local/localfileobject.h
 
 FORMS    += mainwindow.ui \
-    qadvancedinputpanel.ui
+	qadvancedinputpanel.ui
 
 OTHER_FILES += \
 	other/extensions.js

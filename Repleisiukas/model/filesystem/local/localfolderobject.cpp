@@ -1,6 +1,7 @@
 #include "localfolderobject.h"
+#include "localfileobject.h"
+
 #include <QtScript/QScriptEngine>
-#include "../openmodes.h"
 #include <QDebug>
 #include <QFileInfo>
 
@@ -28,16 +29,19 @@ QString LocalFolderObject::getName()
 
 void LocalFolderObject::setName(QString name)
 {
-	if(_mode == MODE_WRITE)
+	if(_mode == MODE_WRITE || _mode == MODE_READ_WRITE)
 	{
 		QString newName = QDir::cleanPath(_dir.filePath("../" + name));
-		qDebug() << _dir.absolutePath() << newName;
 
-		if(!_dir.rename(_dir.absolutePath(), newName)){
-			context()->throwError("Rename failed.");
+		if(!QFile::exists(newName)){
+			if(!_dir.rename(_dir.absolutePath(), newName)){
+				context()->throwError("Rename failed.");
+			}else{
+				_dir = QDir(newName);
+				_url.setPath(newName);
+			}
 		}else{
-			_dir = QDir(newName);
-			_url.setPath(newName);
+			context()->throwError(QString("File or folder with name '%1' already exists.").arg(newName));
 		}
 	}else{
 		context()->throwError("Could not rename. Directry must be opened in write mode ('w')");
@@ -87,7 +91,17 @@ QList<IFileSystemObject *> LocalFolderObject::getFolders()
 {
 	QList<IFileSystemObject *> result;
 
-	QFileInfoList folders = _dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden);
+#ifdef Q_WS_WIN
+	QFileInfoList folders;
+
+	if(_url.path() == "/")
+		folders = _dir.entryInfoList(QDir::Drives | QDir::NoDotAndDotDot);
+	else
+		folders = _dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
+#else
+	QFileInfoList folders = _dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
+#endif
+
 	foreach (const QFileInfo folder, folders) {
 		result.append(new LocalFolderObject(QUrl(folder.absoluteFilePath()), _mode, _engine));
 	}
@@ -99,7 +113,10 @@ QList<IFileSystemObject *> LocalFolderObject::getFiles()
 {
 	QList<IFileSystemObject *> result;
 
-	//TODO: finish
+	QFileInfoList files = _dir.entryInfoList(QDir::Files | QDir::Hidden | QDir::System);
+	foreach (const QFileInfo file, files) {
+		result.append(new LocalFileObject(QUrl(file.absoluteFilePath()), _mode, _engine));
+	}
 
 	return result;
 }
@@ -113,5 +130,5 @@ QString LocalFolderObject::toString()
 		permissions->deleteLater();
 	}
 
-	return QString("{%2%1}").arg(getPath()).arg(permissionsStr);
+	return QString("{D%2%1}").arg(getPath()).arg(permissionsStr);
 }
