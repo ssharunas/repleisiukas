@@ -7,6 +7,9 @@
 #include "presentation/queryexecution.h"
 #include "model/qtabdocument.h"
 
+#include <Qsci/qsciscintilla.h>
+#include <Qsci/qscilexerjavascript.h>
+
 namespace Ui {
     class MainWindow;
 }
@@ -22,11 +25,12 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    JSHighlighter *highlighter;
+//    JSHighlighter *highlighter;
 
     FileLoadSave* fileOperations;
 	QueryExecution *queryExecution;
 	QTabDocument * tabDocument;
+	QsciScintilla* query;
 	bool contructionInProgress;
 
 private:
