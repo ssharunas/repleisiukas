@@ -14,6 +14,7 @@ class QFileSystemAccess : public QObject
 		explicit QFileSystemAccess(QScriptEngine *engine);
 
 	public slots:
+		IFileSystemObject* open(QString path);
 		IFileSystemObject* open(QString path, QString mode);
 		bool exists(QString path);
 		QString cwd();

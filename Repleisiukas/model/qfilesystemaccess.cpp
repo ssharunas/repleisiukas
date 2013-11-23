@@ -1,5 +1,6 @@
 #include "qfilesystemaccess.h"
 #include "filesystem/filesystemfactory.h"
+#include "filesystem/openmodes.h"
 
 #include <QScriptEngine>
 #include <QDir>
@@ -11,9 +12,21 @@ QFileSystemAccess::QFileSystemAccess(QScriptEngine *engine) :
 	_engine = engine;
 }
 
+IFileSystemObject *QFileSystemAccess::open(QString path)
+{
+	return open(path, MODE_READ);
+}
+
 IFileSystemObject* QFileSystemAccess::open(QString path, QString mode)
 {
 	IFileSystemObject* result = 0;
+
+#ifdef Q_WS_WIN
+	if(path.indexOf(':') == 1 && path[0].isLetter()){
+		qWarning() << "Detected path with scheme" << path[0] <<". Assuming drive letter and pathcing path with file scheme.";
+		path = "file:///" + path;
+	}
+#endif
 
 	QUrl url(path);
 
@@ -33,6 +46,8 @@ IFileSystemObject* QFileSystemAccess::open(QString path, QString mode)
 		result = handler->open(url, mode, _engine);
 
 		handler = 0;
+	}else{
+		_engine->currentContext()->throwError(QString("No handler was found for scheme '%1'.").arg(url.scheme()));
 	}
 
 	return result;
@@ -50,6 +65,8 @@ bool QFileSystemAccess::exists(QString path)
 		result = handler->exists(url);
 
 		handler = 0;
+	}else{
+		_engine->currentContext()->throwError(QString("No handler was found for scheme '%1'.").arg(url.scheme()));
 	}
 
 	return result;

@@ -89,6 +89,7 @@ QString LocalFileObject::getPath()
 QString LocalFileObject::getContent()
 {
 	if(_mode == MODE_READ || _mode == MODE_READ_WRITE || _mode == MODE_APPEND){
+
 		if(!tryOpenFile(false, true)){
 			return QString();
 		}
@@ -159,7 +160,7 @@ bool LocalFileObject::tryOpenFile(bool writing, bool reading)
 				mode = QFile::Append;
 			}
 			else if(reading && _mode == MODE_READ) {
-				mode = QFile::Append;
+				mode = QFile::ReadOnly;
 			}
 			else if((reading || writing) && _mode == MODE_READ_WRITE) {
 				mode = QFile::ReadWrite;
