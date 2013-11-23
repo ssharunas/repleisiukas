@@ -6,6 +6,7 @@
 #include <QSettings>
 #include <QDebug>
 #include <QShortcut>
+#include <QScrollBar>
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -91,8 +92,13 @@ void MainWindow::tabChanged(int)
 void MainWindow::setCurretTabDocument(QTabDocument * doc){
 	if(tabDocument != 0)
 	{
-		//tabDocument->setFileName();
-//		tabDocument->setName();
+		int line = 0, index = 0;
+		query->getCursorPosition(&line, &index);
+		tabDocument->setQueryCursor(QPoint(line, index));
+
+		if(query->verticalScrollBar())
+			tabDocument->setQueryScrollPos(query->verticalScrollBar()->value());
+
 		tabDocument->setInput(ui->stringIn->toPlainText());
 		tabDocument->setQuery(query->text());
 		tabDocument->setOutput(ui->stringOut->toPlainText());
@@ -104,6 +110,10 @@ void MainWindow::setCurretTabDocument(QTabDocument * doc){
 		ui->stringIn->setText(tabDocument->input());
 		query->setText(tabDocument->query());
 		ui->stringOut->setPlainText(tabDocument->output());
+
+		query->setCursorPosition(tabDocument->queryCursor().x(), tabDocument->queryCursor().y());
+		if(query->verticalScrollBar())
+			query->verticalScrollBar()->setValue(tabDocument->queryScrollPos());
 	}
 }
 

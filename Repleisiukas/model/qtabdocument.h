@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QUuid>
+#include <QPoint>
 
 class QTabDocument : public QObject
 {
@@ -20,6 +21,8 @@ class QTabDocument : public QObject
 		QString input();
 		QString query();
 		QString output();
+		QPoint queryCursor();
+		int queryScrollPos();
 
 		void setIsModified(bool);
 		void setFileName(QString);
@@ -28,6 +31,8 @@ class QTabDocument : public QObject
 		void setInput(QString);
 		void setQuery(QString);
 		void setOutput(QString);
+		void setQueryCursor(QPoint);
+		void setQueryScrollPos(int);
 
 	signals:
 		void changed();
@@ -41,7 +46,8 @@ class QTabDocument : public QObject
 		QString _input;
 		QString _query;
 		QString _output;
-
+		QPoint _queryPos;
+		int _queryScrollPos;
 };
 
 #endif // QTABDOCUMENT_H

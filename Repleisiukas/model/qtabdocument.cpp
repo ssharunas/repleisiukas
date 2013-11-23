@@ -1,7 +1,7 @@
 #include "qtabdocument.h"
 
 QTabDocument::QTabDocument(QObject *parent) :
-	QObject(parent), _isModified(0)
+	QObject(parent), _isModified(0), _queryScrollPos(0)
 {
 }
 
@@ -63,6 +63,16 @@ QString QTabDocument::output(){
 	return _output;
 }
 
+QPoint QTabDocument::queryCursor()
+{
+	return _queryPos;
+}
+
+int QTabDocument::queryScrollPos()
+{
+	return _queryScrollPos;
+}
+
 void QTabDocument::setIsModified(bool value){
 	_isModified = value;
 
@@ -91,4 +101,14 @@ void QTabDocument::setQuery(QString query){
 
 void QTabDocument::setOutput(QString output){
 	_output = output;
+}
+
+void QTabDocument::setQueryCursor(QPoint pos)
+{
+	_queryPos = pos;
+}
+
+void QTabDocument::setQueryScrollPos(int pos)
+{
+	_queryScrollPos = pos;
 }
