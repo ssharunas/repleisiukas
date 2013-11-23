@@ -26,7 +26,8 @@ SOURCES += main.cpp\
 	model/filesystem/local/localfilesystemhandler.cpp \
 	model/irepleisiukasscriptobject.cpp \
 	model/filesystem/local/localfileobject.cpp \
-	model/filesystem/openmodes.cpp
+	model/filesystem/openmodes.cpp \
+    model/ihelpfull.cpp
 
 HEADERS  += mainwindow.h \
 	ui/jshighlighter.h \
@@ -47,7 +48,8 @@ HEADERS  += mainwindow.h \
 	model/filesystem/openmodes.h \
 	model/irepleisiukasscriptobject.h \
 	model/scriptvalueconverttemplate.h \
-	model/filesystem/local/localfileobject.h
+	model/filesystem/local/localfileobject.h \
+    model/ihelpfull.h
 
 FORMS    += mainwindow.ui \
 	qadvancedinputpanel.ui
