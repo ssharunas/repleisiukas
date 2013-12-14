@@ -1,4 +1,4 @@
-#include <QtGui/QApplication>
+#include <QApplication>
 #include "mainwindow.h"
 
 #include "model/filesystem/filesystemfactory.h"
@@ -6,8 +6,8 @@
 
 int main(int argc, char *argv[])
 {
-	FileSystemFactory::SetDefaultScheme("file");
-	FileSystemFactory::RegisterFileSystemHandler("file", new LocalFileSystemHandler);
+    FileSystemFactory::SetDefaultScheme("file");
+    FileSystemFactory::RegisterFileSystemHandler("file", new LocalFileSystemHandler);
 
     QApplication a(argc, argv);
     MainWindow w;

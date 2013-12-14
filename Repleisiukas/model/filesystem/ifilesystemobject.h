@@ -11,6 +11,10 @@
 
 class IFileSystemObject : public IRepleisiukasScriptObject
 {
+#if QT_VERSION >= 0x050000
+	Q_OBJECT
+#endif
+
 	public:
 		IFileSystemObject(QScriptEngine* engine) : IRepleisiukasScriptObject(engine) {}
 		virtual ~IFileSystemObject() {}

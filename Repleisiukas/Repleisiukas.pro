@@ -5,6 +5,8 @@
 #-------------------------------------------------
 
 QT       += core gui script scripttools
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
 
 TARGET = Repleisiukas
 TEMPLATE = app
