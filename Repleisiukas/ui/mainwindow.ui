@@ -104,7 +104,7 @@
      <x>0</x>
      <y>0</y>
      <width>677</width>
-     <height>18</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuQueris">
@@ -121,6 +121,7 @@
     <addaction name="actionSave_As"/>
     <addaction name="actionLoad"/>
     <addaction name="menuLastUsed"/>
+    <addaction name="actionRestore_last_query"/>
    </widget>
    <widget class="QMenu" name="menuSettings">
     <property name="title">
@@ -187,19 +188,24 @@
     <string>Save As..</string>
    </property>
   </action>
+  <action name="actionRestore_last_query">
+   <property name="text">
+    <string>Restore last query</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
    <class>QAdvancedInputPanel</class>
    <extends>QWidget</extends>
-   <header>qadvancedinputpanel.h</header>
+   <header>ui/qadvancedinputpanel.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QAdvancedTabBar</class>
    <extends>QWidget</extends>
-   <header>qadvancedtabbar.h</header>
+   <header>ui/qadvancedtabbar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

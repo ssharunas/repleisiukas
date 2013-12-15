@@ -1,7 +1,7 @@
 
 function help(topic)
 {
-	function helpTopic(topic, shortTopic, helpText)
+	function HelpTopic(topic, shortTopic, helpText)
 	{
 		this.topic = topic;
 		this.shortTopic = shortTopic;
@@ -15,7 +15,7 @@ function help(topic)
 		return this;
 	}
 
-	helpTopic.prototype.toString = function()
+	HelpTopic.prototype.toString = function()
 	{
 		spaces = "";
 		for(var i = this.topic.length; i < 15; i++, spaces += " ");
@@ -23,20 +23,20 @@ function help(topic)
 		return " * " + this.topic + spaces +" - "+ this.shortTopic
 	}
 
-	function helpObject()
+	function HelpObject()
 	{
 		this.genericHelp = "Display help about selected topic. \nAvailable topics:"
 	}
 
-	helpObject.prototype.topics = help.topics;
+	HelpObject.prototype.topics = help.topics;
 
-	helpObject.prototype.registerTopic = function (topic, shortTopic, helpText)
+	HelpObject.prototype.registerTopic = function (topic, shortTopic, helpText)
 	{
-		this.topics.push(new helpTopic(topic, shortTopic, helpText));
+		this.topics.push(new HelpTopic(topic, shortTopic, helpText));
 		return null;
 	}
 
-	helpObject.prototype.toString = function()
+	HelpObject.prototype.toString = function()
 	{
 		items = ""
 
@@ -57,6 +57,13 @@ function help(topic)
 
 				}
 			};
+
+			if(typeof topic.help == "function")
+				return topic.help();
+
+			if(repleisiukas && repleisiukas.hasOwnProperty(topic) && repleisiukas[topic] && typeof repleisiukas[topic].help == "function"){
+				return repleisiukas[topic].help();
+			}
 		}
 
 		return "Could not find help on topic '" + topic + "'";
@@ -67,10 +74,10 @@ function help(topic)
 	}
 	else
 	{
-		return new helpObject();
+		return new HelpObject();
 	}
 }
-help.topics = new Array();
+help.topics = [];
 
 help().registerTopic("help", "Help system.",
 "Displays and manages help topics.\n\n\t* Displaying\n\

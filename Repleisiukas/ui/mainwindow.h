@@ -2,13 +2,13 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "ui/jshighlighter.h"
-#include "presentation/fileloadsave.h"
-#include "presentation/queryexecution.h"
-#include "model/qtabdocument.h"
 
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexerjavascript.h>
+
+#include "presentation/fileloadsave.h"
+#include "presentation/queryexecution.h"
+#include "model/qtabdocument.h"
 
 namespace Ui {
     class MainWindow;
@@ -23,21 +23,21 @@ public:
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
+	Ui::MainWindow *_ui;
 
-//    JSHighlighter *highlighter;
-
-    FileLoadSave* fileOperations;
-	QueryExecution *queryExecution;
-	QTabDocument * tabDocument;
-	QsciScintilla* query;
-	bool contructionInProgress;
+	FileLoadSave* _fileOperations;
+	QueryExecution *_queryExecution;
+	QTabDocument * _tabDocument;
+	QsciScintilla* _queryEditor;
+	bool _isContructionInProgress;
 
 private:
 
-	void LoadQueryToGUI(QString query);
+	void loadQueryToGUI(QString _query);
+	void loadFileToGUI(QString fileName);
 	void setCurretTabDocument(QTabDocument * doc);
-	void LoadSession();
+	void loadSession();
+
 
 protected:
 	virtual void closeEvent(QCloseEvent *);
@@ -46,10 +46,9 @@ private slots:
 	void onClosing();
 	void onQueryChanged();
 	void tabChanged(int index);
-    void on_pushButton_2_clicked();
-    void UpdateLastUsedMenu();
-    void on_actionAuto_update_triggered();
-    void on_openFile_clicked();
+	void updateLastUsedMenu();
+	void onOpenLastUsed();
+	void on_actionAuto_update_triggered();
     void on_pushButton_clicked();
     void on_actionLoad_triggered();
     void on_actionSave_triggered();
@@ -59,6 +58,7 @@ private slots:
 	void on_actionZoom_Out_triggered();
 	void on_actionDebugger_triggered();
 	void on_actionSave_As_triggered();
+	void on_actionRestore_last_query_triggered();
 };
 
 #endif // MAINWINDOW_H

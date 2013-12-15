@@ -14,33 +14,30 @@ class FileLoadSave : public QObject
 		explicit FileLoadSave(QWidget *parent = 0);
 		~FileLoadSave();
 
-		QString GetLastQuery();
-		void SetLastQuery(QString query);
+		QString lastQuery();
+		void setLastQuery(QString query);
 
-		QString LoadFromFile(QString filename);
-		QString GetLoadFromFileFilename();
-		unsigned int MenuItemCount();
-		void UpdateLastUsedOrder(QString newName);
-		QStringList GetLastUsedMenuEntries();
-		QString SaveToFile(QString query);
-		QString SaveToFile(QString fileName, QString query);
+		QString loadFromFile(QString filename);
+		QString getLoadFromFileFilename();
+		unsigned int menuRecentItemCount();
+		void updateLastUsedOrder(QString newName);
+		QStringList getLastUsedMenuEntries();
+		QString saveToFile(QString query);
+		QString saveToFile(QString fileName, QString query);
 		QWidget* parent() const;
 
-		QString LoadResource(QString path);
-		QString GetAutoLoadText(QString script);
+		QString loadResource(QString path);
+		QString getAutoLoadText(QString script);
 
 		void saveCurrentSession(QList<QTabDocument*> &sessionDocuments);
 		QList<QTabDocument *> getSavedSession();
 
 	private:
-		unsigned int DEFAULT_MENU_ITEMS_COUNT;
-		QTextStream* strem;
-		QFile *last;
+		QTextStream* _strem;
+		QFile *_last;
 
 	signals:
-		void UpdateLastUsed();
-	public slots:
-
+		void lastUsedUpdated();
 };
 
 #endif // FILELOADSAVE_H

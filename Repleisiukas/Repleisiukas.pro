@@ -13,13 +13,12 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-		mainwindow.cpp \
-	ui/jshighlighter.cpp \
-	qadvancedinputpanel.cpp \
-	presentation/fileloadsave.cpp \
+        ui/mainwindow.cpp \
+        ui/qadvancedinputpanel.cpp \
+        ui/qadvancedtabbar.cpp \
+        presentation/fileloadsave.cpp \
 	presentation/queryexecution.cpp \
 	model/qtabdocument.cpp \
-	qadvancedtabbar.cpp \
 	model/qfilesystemaccess.cpp \
 	model/filesystem/filesystemfactory.cpp \
 	model/filesystem/permission.cpp \
@@ -29,15 +28,15 @@ SOURCES += main.cpp\
 	model/irepleisiukasscriptobject.cpp \
 	model/filesystem/local/localfileobject.cpp \
 	model/filesystem/openmodes.cpp \
-    model/ihelpfull.cpp
+        model/ihelpfull.cpp
 
-HEADERS  += mainwindow.h \
-	ui/jshighlighter.h \
-	qadvancedinputpanel.h \
-	presentation/fileloadsave.h \
+HEADERS  += \
+        ui/mainwindow.h \
+        ui/qadvancedinputpanel.h \
+        ui/qadvancedtabbar.h \
+        presentation/fileloadsave.h \
 	presentation/queryexecution.h \
 	model/qtabdocument.h \
-	qadvancedtabbar.h \
 	model/qfilesystemaccess.h \
 	model/filesystem/filesystemfactory.h \
 	model/filesystem/ifilesystemhandler.h \
@@ -51,10 +50,11 @@ HEADERS  += mainwindow.h \
 	model/irepleisiukasscriptobject.h \
 	model/scriptvalueconverttemplate.h \
 	model/filesystem/local/localfileobject.h \
-    model/ihelpfull.h
+        model/ihelpfull.h
 
-FORMS    += mainwindow.ui \
-	qadvancedinputpanel.ui
+FORMS    += \
+        ui/mainwindow.ui \
+        ui/qadvancedinputpanel.ui
 
 OTHER_FILES += \
 	other/extensions.js
@@ -62,4 +62,4 @@ OTHER_FILES += \
 RESOURCES += \
 	other/resources.qrc
 
-LIBS         += -lqscintilla2
+LIBS      += -lqscintilla2

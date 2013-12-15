@@ -24,22 +24,6 @@ class IFileSystemObject : public IRepleisiukasScriptObject
 		virtual void setPermissions(Permission* permissions) = 0;
 		virtual Permission* getPermissions() = 0;
 		virtual QString getPath() = 0;
-
-//		virtual bool getIsClosed() = 0;
-
-//		virtual QString ReadAll() = 0;
-//		virtual QString ReadLine() = 0;
-//		virtual bool Write(QString data) = 0;
-//		virtual bool Seek(int pos, Whence whence) = 0;
-//		virtual void Flush() = 0;
-//		virtual void Close() = 0;
-
-//		virtual void registerMetaType(QScriptEngine *engine){
-//			Q_DECLARE_METATYPE(IFileSystemObject)
-//			typedef IFileSystemObject* pIFileSystemObject;
-
-//			qScriptRegisterMetaType(engine, &convertToScriptValue<pIFileSystemObject>, &convertFromScriptValue<pIFileSystemObject>);
-//		}
 };
 
 #endif // IFILESYSTEMOBJECT_H

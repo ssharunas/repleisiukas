@@ -14,6 +14,7 @@ class QFileSystemAccess : public QObject, public IHelpfull
 		Q_PROPERTY(QString cwd READ cwd)
 	public:
 		explicit QFileSystemAccess(QScriptEngine *engine);
+		virtual ~QFileSystemAccess();
 
 	public slots:
 		IFileSystemObject* open(QString path);
@@ -27,6 +28,7 @@ class QFileSystemAccess : public QObject, public IHelpfull
 		QString toString();
 	public:
 		QString cwd();
+		static void registerGlobalObject(QScriptEngine &engine);
 
 	private:
 		void initHelp();

@@ -5,11 +5,11 @@
 static unsigned int tab_document_count = 0;
 
 QAdvancedTabBar::QAdvancedTabBar(QWidget *parent) :
-	QTabBar(parent), trashButton(0)
+	QTabBar(parent), _trashButton(0)
 {
-	trashMenu = new QMenu(this);
-	lastAction = trashMenu->addSeparator();
-	trashMenu->addAction("Valyti", this, SLOT(emptyTrash()));
+	_trashMenu = new QMenu(this);
+	_lastAction = _trashMenu->addSeparator();
+	_trashMenu->addAction("Valyti", this, SLOT(emptyTrash()));
 
 	setExpanding(false);
 	setDocumentMode(true);
@@ -25,8 +25,8 @@ QTabDocument* QAdvancedTabBar::getCurrentDocument()
 
 	QString currentDocumentUID = tabData(currentIndex()).toString();
 
-	if(documents.contains(currentDocumentUID))
-		doc = documents[currentDocumentUID];
+	if(_documents.contains(currentDocumentUID))
+		doc = _documents[currentDocumentUID];
 
 	return doc;
 }
@@ -38,8 +38,8 @@ QTabDocument* QAdvancedTabBar::getTabDocument(int tab)
 	if(tab >= 0 && tab < count()){
 		QString currentDocumentUID = tabData(tab).toString();
 
-		if(documents.contains(currentDocumentUID))
-			doc = documents[currentDocumentUID];
+		if(_documents.contains(currentDocumentUID))
+			doc = _documents[currentDocumentUID];
 		else
 			qDebug() << "Could not find document with id " << currentDocumentUID;
 	}
@@ -53,7 +53,7 @@ QTabDocument* QAdvancedTabBar::createDocument()
 	doc->setName(QString("New %1").arg(tab_document_count++));
 	connect(doc, SIGNAL(changed()), this, SLOT(updateTab()));
 
-	documents[doc->uid()] = doc;
+	_documents[doc->uid()] = doc;
 
 	return doc;
 }
@@ -62,9 +62,9 @@ void QAdvancedTabBar::openDocument(QTabDocument* document)
 {
 	if(document != 0)
 	{
-		if(!documents.contains(document->uid()))
+		if(!_documents.contains(document->uid()))
 		{
-			documents[document->uid()] = document;
+			_documents[document->uid()] = document;
 			connect(document, SIGNAL(changed()), this, SLOT(updateTab()));
 		}
 
@@ -112,30 +112,30 @@ void QAdvancedTabBar::mouseDoubleClickEvent(QMouseEvent * evt){
 
 void QAdvancedTabBar::setTrashButton(QPushButton *button)
 {
-	trashButton = button;
+	_trashButton = button;
 
-	if(trashButton != 0)
+	if(_trashButton != 0)
 	{
-		trashButton->setMenu(trashMenu);
+		_trashButton->setMenu(_trashMenu);
 	}
 }
 
 void QAdvancedTabBar::emptyTrash()
 {
-	if(trash.isEmpty())
+	if(_trash.isEmpty())
 		return;
 
 	QAction* action = 0;
-	while(!trash.isEmpty())
+	while(!_trash.isEmpty())
 	{
-		action = trash.takeLast();
+		action = _trash.takeLast();
 		QString uid = action->data().toString();
-		trashMenu->removeAction(action);
+		_trashMenu->removeAction(action);
 
 		QTabDocument* doc = 0;
 
-		if(documents.contains(uid))
-			doc = documents.take(uid);
+		if(_documents.contains(uid))
+			doc = _documents.take(uid);
 
 		if(doc != 0)
 			delete doc;
@@ -144,7 +144,7 @@ void QAdvancedTabBar::emptyTrash()
 		action = 0;
 	}
 
-	lastAction = trashMenu->actions().first();
+	_lastAction = _trashMenu->actions().first();
 }
 
 void QAdvancedTabBar::closeTab(int index)
@@ -154,20 +154,20 @@ void QAdvancedTabBar::closeTab(int index)
 		QTabDocument* doc = 0;
 		QString currentDocumentUID = tabData(index).toString();
 
-		if(documents.contains(currentDocumentUID))
-			doc = documents[currentDocumentUID];
+		if(_documents.contains(currentDocumentUID))
+			doc = _documents[currentDocumentUID];
 
 		removeTab(index);
 
 		if(doc != 0)
 		{
-			QAction *action = new QAction(doc->name(), trashMenu);
+			QAction *action = new QAction(doc->name(), _trashMenu);
 			action->setData(QVariant(doc->uid()));
 			connect(action, SIGNAL(triggered()), this, SLOT(restoreTab()));
 
-			trash.append(action);
-			trashMenu->insertAction(lastAction, action);
-			lastAction = action;
+			_trash.append(action);
+			_trashMenu->insertAction(_lastAction, action);
+			_lastAction = action;
 		}
 	}
 
@@ -183,19 +183,19 @@ void QAdvancedTabBar::restoreTab()
 		QString uid = action->data().toString();
 		QTabDocument * doc = 0;
 
-		if(documents.contains(uid))
-			doc = documents[uid];
+		if(_documents.contains(uid))
+			doc = _documents[uid];
 
 		if(doc != 0)
 		{
 			openDocument(doc);
 		}
 
-		if(trash.contains(action))
-			trash.removeAll(action);
+		if(_trash.contains(action))
+			_trash.removeAll(action);
 
-		trashMenu->removeAction(action);
-		lastAction = trashMenu->actions().first();
+		_trashMenu->removeAction(action);
+		_lastAction = _trashMenu->actions().first();
 
 		action->deleteLater();
 	}
@@ -227,7 +227,7 @@ void QAdvancedTabBar::loadDocuments(QList<QTabDocument*> documents)
 {
 	if(documents.count() > 0)
 	{
-		this->documents.clear();
+		this->_documents.clear();
 
 		while(count())
 			removeTab(0);

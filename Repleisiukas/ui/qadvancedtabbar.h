@@ -4,9 +4,10 @@
 #include <QTabBar>
 #include <QHash>
 #include <QMouseEvent>
-#include "model/qtabdocument.h"
 #include <QPushButton>
 #include <QMenu>
+
+#include "model/qtabdocument.h"
 
 class QAdvancedTabBar : public QTabBar
 {
@@ -17,7 +18,7 @@ class QAdvancedTabBar : public QTabBar
 		QTabDocument* getCurrentDocument();
 		QTabDocument* getTabDocument(int tab);
 		void setTrashButton(QPushButton* button);
-		void loadDocuments(QList<QTabDocument*> documents);
+		void loadDocuments(QList<QTabDocument*> _documents);
 	signals:
 
 	public slots:
@@ -29,12 +30,12 @@ class QAdvancedTabBar : public QTabBar
 		virtual void mouseDoubleClickEvent(QMouseEvent *);
 
 	private:
-		QPushButton* trashButton;
-		QMenu* trashMenu;
-		QHash<QString, QTabDocument*> documents;
-		QList<QAction*> trash;
+		QPushButton* _trashButton;
+		QMenu* _trashMenu;
+		QHash<QString, QTabDocument*> _documents;
+		QList<QAction*> _trash;
 
-		QAction* lastAction;
+		QAction* _lastAction;
 
 	private:
 		QTabDocument* createDocument();

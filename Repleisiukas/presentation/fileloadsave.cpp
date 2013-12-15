@@ -3,41 +3,47 @@
 #include <QSettings>
 #include <QFileDialog>
 #include <QDebug>
+#include <QStandardPaths>
+
+const unsigned int DEFAULT_MENU_ITEMS_COUNT = 10;
 
 FileLoadSave::FileLoadSave(QWidget *parent) :
 	QObject(parent)
 {
-	DEFAULT_MENU_ITEMS_COUNT = 10;
-	strem = 0;
+	_strem = 0;
 
 	QSettings settings;
-	QString tempFilename;
+	QString tempFilename = settings.value("/files/tempFile", QVariant(QString())).toString() ;
 
-#ifdef Q_OS_UNIX
-	tempFilename = settings.value("/files/tempFile", QVariant("lastQuery")).toString();
-#else
-	tempFilename = settings.value("/files/tempFile", QVariant("d:\\last.txt")).toString();
-#endif
+	if(tempFilename.isEmpty() || !QFile::exists(tempFilename)){
+		QString path = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+		QDir().mkpath(path);
 
-	last = new QFile(tempFilename);
-	if (last->open(QIODevice::ReadWrite | QIODevice::Text))
+		tempFilename = path + "/lastQuery";
+		settings.setValue("/files/tempFile", tempFilename);
+	}
+
+	_last = new QFile(tempFilename);
+	if (_last->open(QIODevice::ReadWrite | QIODevice::Text))
 	{
-		strem = new QTextStream(last);
-		strem->setCodec("UTF-8");
+		_strem = new QTextStream(_last);
+		_strem->setCodec("UTF-8");
 	}
 	else
 	{
-		last = 0;
+		delete _last;
+		_last = 0;
 	}
 }
 
 FileLoadSave::~FileLoadSave()
 {
-	if(last != 0){
-		last->close();
-		if(strem != 0)
-			delete strem;
-		delete last;
+	if(_last != 0){
+		if(_strem != 0)
+			delete _strem;
+
+		_last->close();
+		delete _last;
 	}
 }
 
@@ -46,31 +52,31 @@ QWidget* FileLoadSave::parent() const
 	return dynamic_cast<QWidget*>(QObject::parent());
 }
 
-QString FileLoadSave::GetLastQuery()
+QString FileLoadSave::lastQuery()
 {
 	QString result;
 
-	if(strem != 0)
+	if(_strem != 0)
 	{
-		result = strem->readAll();
+		_strem->seek(0);
+		result = _strem->readAll();
 	}
-
 
 	return result;
 }
 
-void FileLoadSave::SetLastQuery(QString query)
+void FileLoadSave::setLastQuery(QString query)
 {
-	if(last != 0 && strem != 0)
+	if(_last != 0 && _strem != 0)
 	{
-		last->resize(0);
+		_last->resize(0);
 
-		*strem << query;
-		strem->flush();
+		*_strem << query;
+		_strem->flush();
 	}
 }
 
-QString FileLoadSave::GetLoadFromFileFilename()
+QString FileLoadSave::getLoadFromFileFilename()
 {
 	QSettings settings;
 	QString path =  settings.value("/files/lastSaveDir").toString();
@@ -88,7 +94,7 @@ QString FileLoadSave::GetLoadFromFileFilename()
 	return QString();
 }
 
-QString FileLoadSave::LoadFromFile(QString filename)
+QString FileLoadSave::loadFromFile(QString filename)
 {
 	QString result = QString();
 
@@ -104,29 +110,29 @@ QString FileLoadSave::LoadFromFile(QString filename)
 			QTextStream stream(&file);
 			stream.setCodec("UTF-8");
 			result = stream.readAll();
-			UpdateLastUsedOrder(filename);
+			updateLastUsedOrder(filename);
 		}
 	}
 
 	return result;
 }
 
-unsigned int FileLoadSave::MenuItemCount()
+unsigned int FileLoadSave::menuRecentItemCount()
 {
 	QSettings settings;
 	return settings.value("/files/recentCount", QVariant(DEFAULT_MENU_ITEMS_COUNT)).toInt();
 }
 
-void FileLoadSave::UpdateLastUsedOrder(QString newName)
+void FileLoadSave::updateLastUsedOrder(QString newName)
 {
 	QSettings settings;
-	int menuItemCount = MenuItemCount();
+	int count = menuRecentItemCount();
 	QStringList settingsToAdd;
-	settingsToAdd.reserve(menuItemCount);
+	settingsToAdd.reserve(count);
 
 	settingsToAdd.append(newName);
 
-	for(int i = 0; i < menuItemCount - 1; i++)
+	for(int i = 0; i < count - 1; i++)
 	{
 		QString item = QString("/files/load/%1").arg(i);
 		QString shitValue = settings.value(item).toString();
@@ -141,15 +147,15 @@ void FileLoadSave::UpdateLastUsedOrder(QString newName)
 		settings.setValue(item, settingsToAdd[i]);
 	}
 
-	emit UpdateLastUsed();
+	emit lastUsedUpdated();
 }
 
-QStringList FileLoadSave::GetLastUsedMenuEntries()
+QStringList FileLoadSave::getLastUsedMenuEntries()
 {
 	QStringList result;
 	QSettings settings;
 
-	for(unsigned int i = 0; i < MenuItemCount(); i++)
+	for(unsigned int i = 0; i < menuRecentItemCount(); i++)
 	{
 		QString item = settings.value(QString("/files/load/%1").arg(i)).toString();
 
@@ -163,7 +169,7 @@ QStringList FileLoadSave::GetLastUsedMenuEntries()
 }
 
 
-QString FileLoadSave::SaveToFile(QString query)
+QString FileLoadSave::saveToFile(QString query)
 {
 	QSettings settings;
 	QString path =  settings.value("/files/lasLoadDir").toString();
@@ -175,13 +181,13 @@ QString FileLoadSave::SaveToFile(QString query)
 		path = fileName.section('/', 0, -2);
 		settings.setValue("/files/lasLoadDir", QVariant(path));
 
-		savedTo = SaveToFile(fileName, query);
+		savedTo = saveToFile(fileName, query);
 	}
 
 	return savedTo;
 }
 
-QString FileLoadSave::SaveToFile(QString fileName, QString query)
+QString FileLoadSave::saveToFile(QString fileName, QString query)
 {
 	if(!fileName.isEmpty())
 	{
@@ -196,13 +202,13 @@ QString FileLoadSave::SaveToFile(QString fileName, QString query)
 		QTextStream stream(&file);
 		stream.setCodec("UTF-8");
 		stream << query;
-		UpdateLastUsedOrder(fileName);
+		updateLastUsedOrder(fileName);
 	}
 
 	return fileName;
 }
 
-QString FileLoadSave::LoadResource(QString path){
+QString FileLoadSave::loadResource(QString path){
 	QFile resourceFile(path);
 	resourceFile.open(QIODevice::ReadOnly);
 	QTextStream stream(&resourceFile);
@@ -210,7 +216,7 @@ QString FileLoadSave::LoadResource(QString path){
 	return stream.readAll();
 }
 
-QString FileLoadSave::GetAutoLoadText(QString script){
+QString FileLoadSave::getAutoLoadText(QString script){
 	QString result;
 	const char * START_TAG = "--<autoload>--";
 	const char * END_TAG = "--</autoload>--";

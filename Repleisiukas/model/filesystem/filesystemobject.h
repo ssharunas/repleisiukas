@@ -19,7 +19,7 @@ class FileSystemObject : public IFileSystemObject
 	public slots:
 
 	protected:
-		QScriptValue isClosed;
+		QScriptValue _isClosed;
 
 
 };

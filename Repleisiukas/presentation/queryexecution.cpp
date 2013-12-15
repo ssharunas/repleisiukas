@@ -14,6 +14,9 @@
 #include "../model/filesystem/local/localfolderobject.h"
 #include <QList>
 
+Q_DECLARE_METATYPE(IFileSystemObject*)
+Q_DECLARE_METATYPE(QList<IFileSystemObject*>)
+
 QueryExecution::QueryExecution(QObject *parent) :
 	QObject(parent), _fileOperations(0)
 {
@@ -29,7 +32,7 @@ QueryExecution::~QueryExecution(){
 	_fileOperations = 0;
 }
 
-FileLoadSave * QueryExecution::FileOperations()
+FileLoadSave * QueryExecution::fileOperations()
 {
 	if(_fileOperations == 0)
 		_fileOperations = new FileLoadSave(0);
@@ -37,7 +40,18 @@ FileLoadSave * QueryExecution::FileOperations()
 	return _fileOperations;
 }
 
-QString QueryExecution::PreProxessQuey(QString query)
+void QueryExecution::attachExtenstions(QScriptEngine &engine)
+{
+	FileSystemObject::registerMetaType(&engine);
+	Permission::registerMetaType(&engine);
+	qScriptRegisterSequenceMetaType<QList<IFileSystemObject*> >(&engine);
+
+	QFileSystemAccess::registerGlobalObject(engine);
+
+	engine.globalObject().setProperty("repleisiukas", engine.globalObject());
+}
+
+QString QueryExecution::preProxessQuey(QString query)
 {
 	QString result;
 	bool changed = false;
@@ -65,7 +79,7 @@ QString QueryExecution::PreProxessQuey(QString query)
 	return result;
 }
 
-QString QueryExecution::LoadExtensions(){
+QString QueryExecution::loadExtensions(){
 	QString result;
 
 	QSettings settings;
@@ -96,28 +110,18 @@ QString QueryExecution::LoadExtensions(){
 	return result;
 }
 
-Q_DECLARE_METATYPE(IFileSystemObject*)
-Q_DECLARE_METATYPE(QList<IFileSystemObject*>)
-
-QString QueryExecution::Execute(QString query, QString userInput)
+QString QueryExecution::execute(QString query, QString userInput)
 {
 	QString result;
 
-	QString resources = FileOperations()->LoadResource(":/scripts/extensions.js");
-	QString extensions = LoadExtensions();
-	query = PreProxessQuey(query);
+	QString resources = fileOperations()->loadResource(":/scripts/extensions.js");
+	QString extensions = loadExtensions();
+	query = preProxessQuey(query);
 
 	QString fullQuery = resources + " ;\n" + extensions + " ;\n " + userInput + " ; \"\" ; \n" + query;
 
 	QScriptEngine engine;
-
-	QFileSystemAccess* test = new QFileSystemAccess(&engine);
-	FileSystemObject::registerMetaType(&engine);
-	Permission::registerMetaType(&engine);
-	qScriptRegisterSequenceMetaType<QList<IFileSystemObject*> >(&engine);
-
-	QScriptValue v= engine.newQObject(test, QScriptEngine::ScriptOwnership, QScriptEngine::ExcludeSuperClassContents);
-	engine.globalObject().setProperty("FS", v);
+	attachExtenstions(engine);
 
 	QSettings settings;
 	bool debugger = settings.value("/settings/debugger").toBool();
@@ -131,21 +135,12 @@ QString QueryExecution::Execute(QString query, QString userInput)
 
 	if(value.isError())
 	{
-		QScriptValueIterator it(value);
-		while (it.hasNext()) {
-			it.next();
-//			qDebug() << it.name() << ": " << it.value().toString();
-		}
-
 		result = "Klaida: " + value.toString();
 	}
 	else
 	{
 		result = value.toString();
 	}
-
-	delete test;
-	test = 0;
 
 	return result;
 }

@@ -8,39 +8,39 @@ namespace FileSystemFactory
 	namespace
 	{
 		QString _defaultScheme;
-		QHash<QString, IFilesystemHandler*> handlers;
+		QHash<QString, IFilesystemHandler*> _handlers;
 	}
 
-	QString GetDefaultScheme()
+	QString defaultScheme()
 	{
 		return _defaultScheme;
 	}
 
-	void SetDefaultScheme(QString defaultScheme)
+	void setDefaultScheme(QString defaultScheme)
 	{
 		_defaultScheme = defaultScheme;
 	}
 
-	void RegisterFileSystemHandler(QString scheme, IFilesystemHandler* handler)
+	void registerFileSystemHandler(QString scheme, IFilesystemHandler* handler)
 	{
-		if(handlers.contains(scheme))
+		if(_handlers.contains(scheme))
 			qWarning() << QString("Scheme '%1' is already registered. It will be replaced.").arg(scheme);
 
-		handlers[scheme] = handler;
+		_handlers[scheme] = handler;
 	}
 
-	IFilesystemHandler* GetHandler(QString scheme)
+	IFilesystemHandler* getHandler(QString scheme)
 	{
 		if(scheme.isEmpty())
-			scheme = GetDefaultScheme();
+			scheme = defaultScheme();
 
-		if(handlers.contains(scheme))
-			return handlers[scheme];
+		if(_handlers.contains(scheme))
+			return _handlers[scheme];
 
 		return 0;
 	}
 
 	QList<QString> registeredSchemes(){
-		return handlers.keys();
+		return _handlers.keys();
 	}
 }

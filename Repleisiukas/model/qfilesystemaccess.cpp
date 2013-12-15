@@ -7,10 +7,15 @@
 #include <QDebug>
 
 QFileSystemAccess::QFileSystemAccess(QScriptEngine *engine) :
-	QObject(0)
+	QObject(engine)
 {
 	_engine = engine;
 	initHelp();
+}
+
+QFileSystemAccess::~QFileSystemAccess()
+{
+	_engine = 0;
 }
 
 IFileSystemObject *QFileSystemAccess::open(QString path)
@@ -31,16 +36,16 @@ IFileSystemObject* QFileSystemAccess::open(QString path, QString mode)
 
 	QUrl url(path);
 
-	qDebug()<< "path:" << url.path()
-			<< "password:" << url.password()
-			<< "scheme:" << url.scheme()
-			<< "host:" << url.host()
-			<< "local:" << url.isLocalFile()
-			<< "relative:" << url.isRelative()
-			<< "userInfo:" << url.userInfo()
-			<< (url.isValid() ? "valid" : "invalid");
+//	qDebug()<< "path:" << url.path()
+//			<< "password:" << url.password()
+//			<< "scheme:" << url.scheme()
+//			<< "host:" << url.host()
+//			<< "local:" << url.isLocalFile()
+//			<< "relative:" << url.isRelative()
+//			<< "userInfo:" << url.userInfo()
+//			<< (url.isValid() ? "valid" : "invalid");
 
-	IFilesystemHandler* handler = FileSystemFactory::GetHandler(url.scheme());
+	IFilesystemHandler* handler = FileSystemFactory::getHandler(url.scheme());
 
 	if(handler)
 	{
@@ -59,7 +64,7 @@ bool QFileSystemAccess::exists(QString path)
 	bool result = false;
 
 	QUrl url(path);
-	IFilesystemHandler* handler = FileSystemFactory::GetHandler(url.scheme());
+	IFilesystemHandler* handler = FileSystemFactory::getHandler(url.scheme());
 
 	if(handler)
 	{
@@ -76,6 +81,13 @@ bool QFileSystemAccess::exists(QString path)
 QString QFileSystemAccess::cwd()
 {
 	return QDir::currentPath();
+}
+
+void QFileSystemAccess::registerGlobalObject(QScriptEngine &engine)
+{
+	QFileSystemAccess* self = new QFileSystemAccess(&engine);
+	QScriptValue fs= engine.newQObject(self, QScriptEngine::ScriptOwnership, QScriptEngine::ExcludeSuperClassContents);
+	engine.globalObject().setProperty("FS", fs);
 }
 
 QString QFileSystemAccess::toString()
@@ -95,7 +107,7 @@ QString QFileSystemAccess::help()
 
 QString QFileSystemAccess::help(QString param)
 {
-	QString result = "Universal file system access functions. Allows access various files: local, network, virtual. Type of resource is determined by scheme. List of supported schemes can be retrieved using function schemes().\nExample of usage: FS.open('/home/user/file.txt', 'r').content\nFunctions:\n";
+	QString result = "Universal file system access functions. Allows access various to files: local, network, virtual. Type of resource is determined by scheme. List of supported schemes can be retrieved using function schemes().\nExample of usage: FS.open('/home/user/file.txt', 'r').content\nFunctions (use FS.help('functionName') to get detailed information):\n";
 
 	if(param.isEmpty())
 		result += getHelp(param);

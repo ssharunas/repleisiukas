@@ -7,11 +7,11 @@
 
 namespace FileSystemFactory
 {
-	QString GetDefaultScheme();
-	void SetDefaultScheme(QString defaultScheme);
+	QString defaultScheme();
+	void setDefaultScheme(QString defaultScheme);
 
-	void RegisterFileSystemHandler(QString scheme, IFilesystemHandler* handler);
-	IFilesystemHandler* GetHandler(QString scheme);
+	void registerFileSystemHandler(QString scheme, IFilesystemHandler* handler);
+	IFilesystemHandler* getHandler(QString scheme);
 	QList<QString> registeredSchemes();
 }
 
