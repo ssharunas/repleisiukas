@@ -91,10 +91,10 @@ QString LocalFileObject::getContent()
 	if(_mode == MODE_READ || _mode == MODE_READ_WRITE || _mode == MODE_APPEND){
 
 		if(!tryOpenFile(false, true)){
-			return QString();
+			return QString("Failed to open file.");
 		}
 
-		return _file.readAll();
+		return QString::fromUtf8(_file.readAll());
 
 	}else{
 		context()->throwError("Could get content. File must be opened in read ('r') or append ('a') mode.");

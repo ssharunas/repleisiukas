@@ -3,7 +3,13 @@
 #include <QSettings>
 #include <QFileDialog>
 #include <QDebug>
-#include <QStandardPaths>
+
+#if QT_VERSION >= 0x050000
+	#include <QStandardPaths>
+#else
+	#include <QDesktopServices>
+#endif
+
 
 const unsigned int DEFAULT_MENU_ITEMS_COUNT = 10;
 
@@ -16,7 +22,13 @@ FileLoadSave::FileLoadSave(QWidget *parent) :
 	QString tempFilename = settings.value("/files/tempFile", QVariant(QString())).toString() ;
 
 	if(tempFilename.isEmpty() || !QFile::exists(tempFilename)){
-		QString path = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+
+		#if QT_VERSION >= 0x050000
+			QString path = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+		#else
+			QString path = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+		#endif
+
 		QDir().mkpath(path);
 
 		tempFilename = path + "/lastQuery";
@@ -224,7 +236,7 @@ QString FileLoadSave::getAutoLoadText(QString script){
 	int start = script.indexOf(START_TAG);
 	if(start != -1)
 	{
-		start += strlen(START_TAG);
+		start += (int)strlen(START_TAG);
 		int end = script.indexOf(END_TAG, start);
 
 		if(end != -1 && end > start)

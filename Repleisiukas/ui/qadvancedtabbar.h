@@ -7,7 +7,7 @@
 #include <QPushButton>
 #include <QMenu>
 
-#include "model/qtabdocument.h"
+#include "../model/qtabdocument.h"
 
 class QAdvancedTabBar : public QTabBar
 {

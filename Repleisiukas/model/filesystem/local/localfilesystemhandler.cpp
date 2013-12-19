@@ -12,7 +12,7 @@ LocalFileSystemHandler::LocalFileSystemHandler(QObject *parent) :
 
 IFileSystemObject *LocalFileSystemHandler::open(QUrl url, QString mode, QScriptEngine *engine)
 {
-	QString path = url.path();
+	QString path = url.toLocalFile();
 	if(path.startsWith("~")){
 		if(path.length() <= 1 || path[1] == '/' || path[1] == QDir::separator()) {
 			path.replace(0, 1, QDir::homePath());
@@ -20,7 +20,7 @@ IFileSystemObject *LocalFileSystemHandler::open(QUrl url, QString mode, QScriptE
 		}
 	}
 
-	QFileInfo fileInfo (url.path());
+	QFileInfo fileInfo (path);
 
 	if(fileInfo.exists()){
 		if(fileInfo.isDir()){

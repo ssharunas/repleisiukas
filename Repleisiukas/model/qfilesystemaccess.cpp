@@ -27,7 +27,7 @@ IFileSystemObject* QFileSystemAccess::open(QString path, QString mode)
 {
 	IFileSystemObject* result = 0;
 
-#ifdef Q_WS_WIN
+#if defined(Q_WS_WIN) || defined(Q_OS_WIN)
 	if(path.indexOf(':') == 1 && path[0].isLetter()){
 		qWarning() << "Detected path with scheme" << path[0] <<". Assuming drive letter and pathcing path with file scheme.";
 		path = "file:///" + path;
