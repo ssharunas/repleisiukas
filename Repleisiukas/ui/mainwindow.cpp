@@ -60,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	loadSession();
 
 	connect(_queryEditor, SIGNAL(textChanged()), this, SLOT(onQueryChanged()));
-	connect(_fileOperations, SIGNAL(UpdateLastUsed()), this, SLOT(updateLastUsedMenu()));
+	connect(_fileOperations, SIGNAL(lastUsedUpdated()), this, SLOT(updateLastUsedMenu()));
 	connect(_ui->stringIn, SIGNAL(updateRequest()), this, SLOT(on_pushButton_Go_clicked()));
 
 	_isContructionInProgress = false;

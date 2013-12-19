@@ -5,7 +5,7 @@
 #include <QDir>
 
 LocalFileObject::LocalFileObject(QUrl url, QString mode, QScriptEngine *engine) :
-	FileSystemObject(engine), _file(url.path())
+	FileSystemObject(engine), _file(url.toLocalFile())
 {
 	if(is_valid_open_mode(mode)){
 		_mode = mode;
